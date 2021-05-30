@@ -22,7 +22,7 @@ def login():
         print(code)
         token_info = sp_oauth.get_access_token(code)
 
-        token = token_info['access_token']
+    token = token_info['access_token']
 
     sp = spotipy.Spotify(auth=token)
 
