@@ -38,9 +38,9 @@ def parseSearchResultsArtist(data, searchString):
     resultsPage = data["resultsPage"]
     totalResults = resultsPage['totalEntries']
     if totalResults<1:
-        print('Artist Not Found')
+        return ["Failure", 'No Artist Found matching description: ' + searchString]
     elif totalResults==1:
-        return resultsPage["results"]["artist"]["id"]
+        return ["Success",resultsPage["results"]["artist"][0]["id"]]
     else:
         results = resultsPage["results"]
         artists = results["artist"]

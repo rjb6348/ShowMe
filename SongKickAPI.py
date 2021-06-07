@@ -23,12 +23,8 @@ class SongKickAPI(object):
         if valid_request:
             data = r.json()
             [status, result] = Utilities.parseSearchResultsArtist(data, ArtistIn)
-            if status=="Success":
-                return result
-            elif status == "Failure":
-                print(result)
-                return("Status: Fail")
-                #return result
+            if status == "Success" or status == "Failure":
+                return [status, result]
             else:
                 print("Unhandled Result Status")
             '''
@@ -61,12 +57,8 @@ class SongKickAPI(object):
         if valid_request:
             data = r.json()
             [status, result] = Utilities.parseSearchResultsLocationCity(data, City, State)
-            if status=="Success":
-                return result
-            elif status == "Failure":
-                print(result)
-                return("Status: Fail")
-                #return result
+            if status=="Success" or status == "Failure":
+                return [status, result]
             else:
                 print("Unhandled Result Status")
         else:
@@ -91,22 +83,30 @@ class SongKickAPI(object):
             '''
 
 
-    def findArtistEvents(self, Artist=None, ArtistID=None, SearchLocation=None, SearchLocationID=None):
-        Search_Event_URL = self.Base_Artist_Event_Search_URL.format(Artist, SongkickAPIKey)
+    def findArtistEvents(self, Artist=None, ArtistId=None, SearchLocation=None, SearchLocationID=None):
+        Search_Event_URL = self.Base_Artist_Event_Search_URL.format(ArtistId, SongkickAPIKey)
         r = requests.get(Search_Event_URL)
         valid_request = r.status_code in range(200,299)
         ConcertFound = False
         locations = []
+        dates = []
         if valid_request:
             data = r.json()
-            results = data['resultsPage']['results']
+            resultsPage = data['resultsPage']
+            totalEntries =  resultsPage["totalEntries"]
+            if totalEntries == 0:
+                print("The Artist: " + Artist + " is not on tour")
+                return ["Failure", "Not Touring"]
+            results = resultsPage['results']
             eventlist = results['event']
             for event in eventlist:
                 locations.append(event['location']['city'])
+                dates.append(event['start']['date'])
             if SearchLocation:
                 for location in locations:
                     if SearchLocation in location:
                         print(location)
+            return ["Success", [dates, locations]]
         else:
             print("Service Down")
                 

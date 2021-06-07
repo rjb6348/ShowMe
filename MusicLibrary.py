@@ -12,7 +12,7 @@ from spotipy.oauth2 import SpotifyOAuth
 
 from pprint import pprint
 
-class SpotifyInteractions(object):
+class SpotifyUserInteractions(object):
     client_id = None
     client_secret = None
 
@@ -56,4 +56,7 @@ class SpotifyInteractions(object):
         print(self.userName)
 
     def logout(self):
+        self.token = None
+        self.sp = None 
+        self.userName = None
         print("logout")
