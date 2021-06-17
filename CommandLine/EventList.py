@@ -79,12 +79,19 @@ class EventList(object):
         sorteddates = dict(sorted(dateIdDict.items(), key=lambda item : item[1]))
         for id in sorteddates.keys():
             tempEventList.append(self.getEventById(id))
-
         self.Events = tempEventList
 
     def getEvents(self):
         return self.Events
 
+    def getEventsinTimeWindow(self, startDate, endDate):
+        tempEventList = []
+        for event in self.Events:
+            tempEventId = event.getEventId()
+            tempDate = event.getDate()
+            if tempDate < endDate and tempDate > startDate:
+                tempEventList.append(event)
+        return tempEventList
 
     
 

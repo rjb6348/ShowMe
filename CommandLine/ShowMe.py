@@ -11,10 +11,11 @@ def main():
     searchType = smUtil.promptForSearchType()
     if searchType == False:
         print("Crash Here")
+
     ml = None
     sk = SongKickAPI.SongKickAPI()
 
-    if searchType == 4 or searchType == 2:
+    if searchType == 3:
         ml = smUtil.setupML(searchType)
         if ml == False:
             print("Fail")
@@ -25,19 +26,16 @@ def main():
 
     events = search(searchType, input, location, sk, ml)
 
-    displayEvents = (events, input)
+    #displayEvents = (events, input)
 
 
 def search(searchType, input, location, sk, ml):
     if searchType == 1:
         events = ArtistSearch(input, location, sk)
     elif searchType == 2:
-        events = GenreSearch(input, location, sk, ml)
-    elif searchType == 3:
         events = LocationSearch(input, location, sk)
-    elif searchType == 4:
+    elif searchType == 3:
         events = LibrarySearch(input, location, sk, ml)
-
     return events
 
 
@@ -65,10 +63,6 @@ def ArtistSearch(input, location, sk):
     else:
         print(artistId)
 
-
-def GenreSearch(input, ml):
-    print("Genre Search")
-
 def LocationSearch(input, location, sk):
     print("Location Search")
     [findArtistEventsStatus, events] = sk.findLocationEvents(location[0][0], location[1])
@@ -77,27 +71,13 @@ def LocationSearch(input, location, sk):
         for event in events:
             EL.addEventJson(event)
     EL.printEvents()
-    #for event in eventList:
-    #    if event != "Failure":
-    #        print(event.getHeadliner() + " is coming to " + event.getCity() + " on " + event.getDate() + " at the " + event.getVenueName())
-
-        #df.loc[rank,'status'] = findArtistEventsStatus
-        #df.loc[rank,'statusCode'] = events
         
 
 def LibrarySearch(input, location, sk, ml):
     print("Library Search")
     locationId = location[1]
     City = location[0][0]
-    if input[0] == 1:
-        timeRange = ["long_term"]
-    elif input[0] == 2:
-        timeRange = ["medium_term"]
-    elif input[0] == 3:
-        timeRange = ["long_term"]
-    elif input[0] == 4:
-        timeRange = ["long_term","medium_term","short_term"]
-
+    timeRange = input
     topArtists = [[] for i in timeRange]
     topArtistStatus = [[] for i in timeRange]
     artistIds, artistNames, artistEvents, status, statusCode = [], [], [], [], []
@@ -147,7 +127,7 @@ def LibrarySearch(input, location, sk, ml):
                     EO = Event.Event(event)
                     EO.setSearchedArtist(artist)
                     eventList.append(EO)
-                    EL.addEventJson(event)
+                    EL.addEvent(EO)
             else:
                 eventList.append(status)
                 df.loc[rank,'status'] = findArtistEventsStatus
@@ -169,35 +149,14 @@ def LibrarySearch(input, location, sk, ml):
     print("Ordered and sanitized")
     EL.printEvents()
 
-'''
-    df['EventList'] = artistEvents
-    EventsInCity = []
-    for rank, [artist, status, FailureReason, artistId, EventList] in df.iterrows():
-        EventsInCityTemp = []
-        if status == "Success":
-            for event in EventList:
-                if event.getMetroId() == locationId:
-                    print(artist + " coming to " + event.getCity() + " on " + event.getDate() + " at the " + event.getVenueName())
-                    EventsInCityTemp.append(event)
-            if len(EventsInCityTemp)==0:
-                    EventsInCityTemp.append(None)
-                    print(artist + " is touring, but not coming to " + City)
-        else:
-            print( FailureReason)
-            EventsInCityTemp.append(None)
-        EventsInCity.append(EventsInCityTemp)
+    [startDate, endDate] = smUtil.queeryDateRange()
 
-    df['EventsInCity'] = EventsInCity
+    if startDate == False or endDate == False:
+        EL = EL.getEventsinTimeWindow(startDate, endDate)
 
-    print("\n\n\n")
-    print("Artist Coming to Metro Area of " + City)
-    
-    for rank, [artist, status, FailureReason, artistId, EventList, EventsInCity] in df.iterrows():
-        if len(EventsInCity) > 0 and EventsInCity[0] is not None:
-            for event in EventsInCity:
-                print(artist + " coming to " + event.getCity() + " on " + event.getDate() + " at the " + event.getVenueName())
-'''
-
+    for event in events:
+        if event.getSearchedArtist() not in artistNames:
+            print(event)
 
 if __name__ == "__main__":
     main()

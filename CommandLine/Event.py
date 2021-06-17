@@ -26,7 +26,7 @@ class Event(object):
         for artistInfo in self.performances:
             self.ArtistIds.append(artistInfo['artist']['id'])
 
-    def setSearchedArtist(self,Artist):
+    def setSearchedArtist(self, Artist):
         self.ArtistSearched = Artist
 
     def getCity(self):

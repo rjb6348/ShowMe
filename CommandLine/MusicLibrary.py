@@ -37,7 +37,6 @@ class SpotifyUserInteractions(object):
             self.token = token
             self.userName = sp.me()['display_name']
             self.sp = sp
-            #pprint(sp.me())
             return "Success"
         except:
             return "Failure"
@@ -59,4 +58,3 @@ class SpotifyUserInteractions(object):
         self.token = None
         self.sp = None 
         self.userName = None
-        print("logout")
