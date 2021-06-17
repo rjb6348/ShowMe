@@ -30,7 +30,7 @@ jobs:
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
       - name: Run Unit Test
         working-directory: ./CommandLine
-      - run: python -m unittest UnitTestEvent.py
+        run: python -m unittest UnitTestEvent.py
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
