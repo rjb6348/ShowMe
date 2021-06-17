@@ -50,7 +50,7 @@ class EventList(object):
         if len(self.Events) == 0:
             print("No Shows Found")
         for event in self.Events:
-            print(event.getHeadliner() + " is coming to " + event.getCity() + " on " + event.getDate() + " at the " + event.getVenueName())
+            print(event.getSearchedArtist() + " will be coming to " + event.getCity() + " on " + event.getDate() + " at the " + event.getVenueName())
 
     def checkforEvents(self):
         if len(self.Events)>0:

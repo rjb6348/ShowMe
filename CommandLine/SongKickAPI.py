@@ -55,7 +55,7 @@ class SongKickAPI(object):
                 status = "Success"
         else:
             status = "Failure"
-            returnData = "Invalid Request Code: " + r.status_code
+            returnData = "Invalid Request Code: " + str(r.status_code)
         return [status, returnData]
 
     def findLocationEvents(self, Location, LocationId):

@@ -108,9 +108,10 @@ def checkToQueryLocation(searchType, sk):
         if citySpecific == "y":
             cityState =  queryLocation()
         elif citySpecific == "n":
-            return False
+            return [[False,False], False]
         else:
             print("Unsupported response. answers can be y or n")
+            return [[False,False], False]
     else:
         cityState = queryLocation()
     while locFound == False:

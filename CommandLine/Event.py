@@ -6,6 +6,7 @@ class Event(object):
         self.eventName = None
         self.ArtistList = []
         self.ArtistIds = []
+        self.ArtistSearched = None
         self.city = self.eventJson['location']['city']
         self.metroId = self.eventJson['venue']['metroArea']['id']
         self.date = self.eventJson['start']['date']
@@ -24,6 +25,9 @@ class Event(object):
 
         for artistInfo in self.performances:
             self.ArtistIds.append(artistInfo['artist']['id'])
+
+    def setSearchedArtist(self,Artist):
+        self.ArtistSearched = Artist
 
     def getCity(self):
         return self.city
@@ -60,6 +64,13 @@ class Event(object):
 
     def getHeadliner(self):
         return self.headliner
+
+    def getSearchedArtist(self):
+        if self.ArtistSearched != None:
+            return self.ArtistSearched
+        else: 
+            return self.getHeadliner()
+
 
     def getEventJson(self):
         return self.eventJson

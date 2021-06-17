@@ -50,8 +50,10 @@ def ArtistSearch(input, location, sk):
         [findArtistEventsStatus, events] = sk.findArtistEvents(input, artistId)
         if findArtistEventsStatus.lower() == "success":
             for event in events:
-                EL.addEventJson(event)
-        if location is not False:
+                EO = Event.Event(event)
+                EO.setSearchedArtist(input)
+                EL.addEvent(EO)
+        if location[1] is not False:
             locEL = EventList.EventList()
             locEL.createEventList(EL.getEventsByMetroId(location[1]))
             locEL.printEvents()
@@ -105,9 +107,13 @@ def LibrarySearch(input, location, sk, ml):
 
     for tr in range(0,len(topArtistStatus)):
         if topArtistStatus[tr].lower() == 'success':
+            print("Your Top artist of: " + timeRange[tr])
             for i, item in enumerate(topArtists[tr]['items']):
                 artistNames.append(item['name'])
-
+                print("Rank " + str(i + 1) + " " + item['name'])
+            print()
+    artistNames = set(artistNames)
+    artistNames = list(artistNames)
     if len(artistNames) > 0:
         artistInfo = {'artistName':artistNames}
         df = pd.DataFrame(data = artistInfo)
@@ -138,7 +144,9 @@ def LibrarySearch(input, location, sk, ml):
             [findArtistEventsStatus, events] = sk.findArtistEvents(artist, artistId)
             if findArtistEventsStatus == "Success":
                 for event in events:
-                    eventList.append(Event.Event(event))
+                    EO = Event.Event(event)
+                    EO.setSearchedArtist(artist)
+                    eventList.append(EO)
                     EL.addEventJson(event)
             else:
                 eventList.append(status)
@@ -148,15 +156,15 @@ def LibrarySearch(input, location, sk, ml):
         else:
             artistEvents.append(None)
 
-    if location is not False:
+    if locationId is not False:
         locEL = EventList.EventList()
-        locEL.createEventList(EL.getEventsByMetroId(location[1]))
+        locEL.createEventList(EL.getEventsByMetroId(locationId))
         EL = locEL
-    print("Unordered and uncleaned")
-    EL.printEvents()
+    #print("Unordered and uncleaned")
+    #EL.printEvents()
     EL.cleanEventList()
-    print("Unordered")
-    EL.printEvents()
+    #print("Unordered")
+    #EL.printEvents()
     EL.orderEventListByDate()
     print("Ordered and sanitized")
     EL.printEvents()
