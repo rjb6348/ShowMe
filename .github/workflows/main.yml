@@ -28,21 +28,20 @@ jobs:
         with:
           python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
-      - name: Run Unit Tests
+          
+      - name: Run Unit Test for Event 
         working-directory: ./CommandLine
         run: python -m unittest UnitTestEvent.py
+
+      - name: Run Unit Test for EventList
+        working-directory: ./CommandLine
         run: python -m unittest UnitTestEventList.py
+
+      - name: Run Unit Test for SongKickAPI
+        working-directory: ./CommandLine
         run: python -m unittest UnitTestSongKickAPI.py
+
+      - name: Run Unit Test for ShowMeUtilities
+        working-directory: ./CommandLine
         run: python -m unittest UnitTestShowMeUtilities.py
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
