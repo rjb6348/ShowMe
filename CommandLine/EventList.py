@@ -7,23 +7,32 @@ class EventList(object):
         self.Events = []
 
     def addEventJson(self, event):
-        self.Events.append(Event.Event(event))
+        Ev = Event.Event(event)
+        if Ev.getNumPerformances() > 0:
+            self.Events.append(Ev)
+        #else debug statement I guess
 
     def addEvent(self, event):
-        self.Events.append(event)
+        if event.getNumPerformances() > 0:
+            self.Events.append(event)
+        #else debug statement I guess
 
     def createEventList(self, events):
-        if len(self.Events) > 0 :
-            print("EventList already contains events")
-        else:
-            self.Events = events
-
-    def createEventListJson(self, events):
-        if len(self.Events) > 0 :
+        if len(self.Events) > 0:
             print("EventList already contains events")
         else:
             for event in events:
-                self.Events.append(Event.Event(event))
+                if event.getNumPerformances() > 0:
+                    self.Events.append(event)
+
+    def createEventListJson(self, events):
+        if len(self.Events) > 0:
+            print("EventList already contains events")
+        else:
+            for event in events:
+                Ev = Event.Event(event)
+                if Ev.getNumPerformances() > 0:
+                    self.Events.append(Event.Event(event))
 
     def getEventsByMetroId(self, metroID):
         returnEvents = []

@@ -1,6 +1,6 @@
 from pyzipcode import ZipCodeDatabase
 import MusicLibrary
-
+import datetime
 def setupML(searchType):
     print("Time to Login to Spotify!")
     client_id = '1b55c01382b740c0b4c6fd22f7065fd6'
@@ -63,57 +63,6 @@ def promptForSearchTypeOld():
             print("Unrecognized or unhandled input.  Bad Job")
             return False
 
-def createSearchTypeQueryOld(searchType):
-    searchQuery = []
-    if searchType == 1:
-        searchQuery = input("What is the artist/band you want to find a tour for?: ")
-    elif searchType == 3:
-        while searchQuery == []:
-            print("What Period of your listening history do you want to find your Top Artists From?  ")
-            print("1: Top Artists from Long Term")
-            print("2: Top Artist from Medium Term")
-            print("3: Top Artist from Short Term")
-            print("4: Top Artists from each period")
-            searchPeriod = input("Enter Period Length (1-4): ")
-            if searchPeriod == None or searchPeriod == "":
-                print("Warning: No input selected.")
-                again = True
-                while again == True:
-                    againIn = input("Try again (y/n): ")
-                    if againIn.lower() == 'n':
-                        return [False]
-                    elif againIn.lower() == 'y':
-                        again = False
-                    else:
-                        print("Waning:  Unrecognized input. Only y or n accepted")
-                continue
-            elif searchPeriod.isnumeric() == False or int(searchPeriod) not in range(1,5):
-                print("Warning: Enter an option between 1 and 4")
-                again = True
-                while again == True:
-                    againIn = input("Try again (y/n): ")
-                    if againIn.lower() == 'n':
-                        return [False]
-                    elif againIn.lower() == 'y':
-                        again = False
-                    else:
-                        print("Waning:  Unrecognized input. Only y or n accepted")
-                continue
-            elif int(searchPeriod) in range(1,5):
-                timeRange = []
-                if int(searchPeriod) == 1:
-                    timeRange = ["long_term"]
-                elif int(searchPeriod) == 2:
-                    timeRange = ["medium_term"]
-                elif int(searchPeriod) == 3:
-                    timeRange = ["long_term"]
-                elif int(searchPeriod) == 4:
-                    timeRange = ["long_term","medium_term","short_term"]
-                searchQuery.append(timeRange)
-            else:
-                print("Unhandled input.  Bad Job")
-                return [False]
-    return searchQuery
 
 def checkToQueryLocation(searchType, sk):
     locFound = False
@@ -145,90 +94,77 @@ def checkToQueryLocation(searchType, sk):
     return [cityState, locId]
 
 def queryLocation():
-    searchQuery = []
-    while searchQuery == []:
-        print("Do you want to search by: ")
-        print("1: City & State")
-        print("2: Zip")
-        LocType = input("Enter Search Type (1 or 2): ")
-        if LocType == None or LocType == "":
-            print("Warning: No input selected.")
-            again = input("Try again (y/n): ")
-            if again == 'n':
-                return False
-            else:
-                continue
-        elif LocType.isnumeric() == False or int(LocType) not in range(1,3):
-            print("Warning: Enter either a 1 or 2")
-            again = input("Try again (y/n): ")
-            if again == 'n':
-                return False
-            else:
-                continue
-        elif int(LocType) == 1:
-            state = input("Enter two letter State Abbreviation (ex: PA): ")
-            city = input("Enter the City: ")
-            searchQuery = [city, state]
-        elif int(LocType) == 2:
-            zcdb = ZipCodeDatabase()
-            zip = input("Enter Zip Code: ")
-            zipcode = zcdb[int(zip)]
-            searchQuery =  [zipcode.city, zipcode.state]
-
-        else:
-            print("I do not understand how we got here")
-        return searchQuery
-
-
-
+    results = queryStandard(["City & State", "Zip"])
+    if results == False:
+        searchQuery = [False, False]
+    elif results == 1:
+        #validLoc = False TODO: Add location validation here
+        #while validLoc == False:
+        state = input("Enter two letter State Abbreviation (ex: PA): ")
+        city = input("Enter the City: ")
+        #    validLoc = validateLoc(city, state)
+        searchQuery = [city, state]
+    elif results == 2:
+        zcdb = ZipCodeDatabase()
+        zipFound = False
+        while zipFound == False:
+            try:
+                zip = input("Enter Zip Code: ")
+                zipcode = zcdb[int(zip)]
+                zipFound = True
+            except:
+                print("Zip " + zip + " not found.  Try again")
+        searchQuery =  [zipcode.city, zipcode.state]
+    else:
+        print("I do not understand how we got here")
+        searchQuery = [False, False]
+    return searchQuery
 
 
 def queeryDateRange():
-    searchQuery = []
     again = True
     while again == True:
-        dateFilter = input("Do you want to filter results by Date? (y/n) ")
+        dateFilter = input("Do you want to search results by Date? (y/n) ")
         if dateFilter.lower() == "y":
             again = False
         elif dateFilter.lower() == "n":
-            return False
+            return [False, False]
         else:
             print("Waning:  Unrecognized input. Only y or n accepted")
-        continue
-
-    # Date Query
-
-    while searchQuery == []:
-        print("Do you want to search by: ")
-        print("1: Month")
-        print("2: Start Date & End Date")
-        dateSearchType = input("Enter Search Type (1 or 2): ")
-        if dateSearchType == None or dateSearchType == "":
-            print("Warning: No input selected.")
-            again = input("Try again (y/n): ")
-            if again == 'n':
-                return False
+    startDateGood = False
+    while startDateGood == False:
+        print('What date do you want to start searching from? (mm/dd/yyyy)')
+        startDate = input("Start Date: ")
+        try:
+            month1, day1, year1 = startDate.split('/')
+            date1 = datetime.datetime(int(year1),int(month1),int(day1))
+            if date1 < datetime.datetime.combine(datetime.date.today(), datetime.time(0,0)):
+                print("Warning: Start date needs to be after today")
             else:
-                continue
-        elif dateSearchType.isnumeric() == False or int(LocType) not in range(1,3):
-            print("Warning: Enter either a 1 or 2")
-            again = input("Try again (y/n): ")
-            if again == 'n':
-                return False
+                startDateGood = True
+        except ValueError:
+            print("Warning: Start Date " + startDate + " not in correct format (mm/dd/yyyy)")
+    endDateGood = False
+    while endDateGood == False:
+        print('What date do you want to stop searching from? (mm/dd/yyyy)')
+        endDate = input("Stop Date: ")
+        try:
+            month2, day2, year2 = endDate.split('/')
+            date2 = datetime.datetime(int(year2),int(month2),int(day2))
+            if date2>date1:
+                endDateGood = True
+                startDate = "-".join([year1,month1,day1])
+                endDate = "-".join([year2,month2,day2])
             else:
-                continue
-        elif int(LocType) == 1:
-            state = input("Enter two letter State Abbreviation (ex: PA): ")
-            city = input("Enter the City: ")
-            searchQuery = [city, state]
-        elif int(LocType) == 2:
-            zcdb = ZipCodeDatabase()
-            zip = input("Enter Zip Code: ")
-            zipcode = zcdb[int(zip)]
-            searchQuery =  [zipcode.city, zipcode.state]
-        else:
-            print("I do not understand how we got here")
-        return searchQuery
+                print("Warning: End date has to be after start date of: " + str(date1))
+        except ValueError:
+            print("Warning: End Date " + endDate + " not in correct format (mm/dd/yyyy)")
+
+    return [startDate, endDate]
+    
+
+
+
 
 
 def promptForSearchType():
@@ -237,6 +173,7 @@ def promptForSearchType():
 
 def createSearchTypeQuery(searchType):
     searchQuery = []
+    results = []
     if searchType == 1:
         results = input("What is the artist/band you want to find a tour for?: ")
     elif searchType == 3:
@@ -261,7 +198,7 @@ def queryStandard(options):
         print("Do you want to search by: ")
         for i in range(1,len(options)+1):
             print(str(i) + ": " + options[i-1])
-        inputString = input("")
+        inputString = input("Search By: ")
 
         if inputString == None or inputString == "":
             print("Warning: No input selected.")

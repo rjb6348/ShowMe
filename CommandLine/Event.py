@@ -18,13 +18,17 @@ class Event(object):
         self.venueURI = self.eventJson['venue']['uri']
         self.eventName = self.eventJson['displayName']
         self.eventURI = self.eventJson['uri']
-        self.headliner = self.eventJson['performance'][0]['displayName']
         self.EventId = self.eventJson['id']
-        for artistInfo in self.performances:
-            self.ArtistList.append(artistInfo['displayName'])
-
-        for artistInfo in self.performances:
-            self.ArtistIds.append(artistInfo['artist']['id'])
+        if len(self.eventJson['performance'])>0:
+            self.headliner = self.eventJson['performance'][0]['displayName']
+            for artistInfo in self.performances:
+                self.ArtistList.append(artistInfo['displayName'])
+            for artistInfo in self.performances:
+                self.ArtistIds.append(artistInfo['artist']['id'])
+        else:
+            self.headliner = []
+            self.ArtistList = []
+            self.ArtistIds = []
 
     def setSearchedArtist(self, Artist):
         self.ArtistSearched = Artist
@@ -77,3 +81,6 @@ class Event(object):
 
     def getEventId(self):
         return self.EventId
+
+    def getNumPerformances(self):
+        return len(self.eventJson['performance'])

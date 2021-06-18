@@ -22,30 +22,41 @@ def main():
 
     location = smUtil.checkToQueryLocation(searchType, sk)
 
+    dateRange = smUtil.queeryDateRange()
+
     input = smUtil.createSearchTypeQuery(searchType)
 
-    events = search(searchType, input, location, sk, ml)
+    events = search(searchType, input, location, sk, ml, dateRange)
 
     #displayEvents = (events, input)
 
 
-def search(searchType, input, location, sk, ml):
+def search(searchType, input, location, sk, ml, dateRange):
     if searchType == 1:
-        events = ArtistSearch(input, location, sk)
+        events = ArtistSearch(input, location, sk, dateRange)
     elif searchType == 2:
-        events = LocationSearch(input, location, sk)
+        events = LocationSearch(input, location, sk, dateRange)
     elif searchType == 3:
-        events = LibrarySearch(input, location, sk, ml)
+        events = LibrarySearch(input, location, sk, ml, dateRange)
     return events
 
 
 
 
-def ArtistSearch(input, location, sk):
+def ArtistSearch(input, location, sk, dateRange):
     [artistSearchStatus, artistId] = sk.findArtist(input)
+    if dateRange[0] == False:
+        dr=None
+    else:
+        dr = dateRange
+    if location[0]:
+        loc = None
+    else:
+        loc = location[1]
+
     if artistSearchStatus.lower() == "success":
         EL = EventList.EventList()
-        [findArtistEventsStatus, events] = sk.findArtistEvents(input, artistId)
+        [findArtistEventsStatus, events] = sk.findArtistEvents(input, artistId, dateRange=dr, metroId=loc)
         if findArtistEventsStatus.lower() == "success":
             for event in events:
                 EO = Event.Event(event)
@@ -57,27 +68,36 @@ def ArtistSearch(input, location, sk):
             locEL.printEvents()
         else:
             EL.printEvents()
-        #for event in eventList:
-        #    if event != "Failure":
-        #        print(input + " is coming to " + event.getCity() + " on " + event.getDate() + " at the " + event.getVenueName())
     else:
         print(artistId)
 
-def LocationSearch(input, location, sk):
+def LocationSearch(input, location, sk, dateRange):
     print("Location Search")
-    [findArtistEventsStatus, events] = sk.findLocationEvents(location[0][0], location[1])
+    if dateRange[0] == False:
+        dr=None
+    else:
+        dr = dateRange
+    [findArtistEventsStatus, events] = sk.findLocationEvents(location[0][0], location[1], dateRange=dr)
+    EL = EventList.EventList()
     if findArtistEventsStatus == "Success":
-        EL = EventList.EventList()
         for event in events:
             EL.addEventJson(event)
     EL.printEvents()
         
 
-def LibrarySearch(input, location, sk, ml):
+def LibrarySearch(input, location, sk, ml, dateRange):
     print("Library Search")
     locationId = location[1]
     City = location[0][0]
     timeRange = input
+    if dateRange[0] == False:
+        dr=None
+    else:
+        dr = dateRange
+    if location[0]:
+        loc = None
+    else:
+        loc = location[1]
     topArtists = [[] for i in timeRange]
     topArtistStatus = [[] for i in timeRange]
     artistIds, artistNames, artistEvents, status, statusCode = [], [], [], [], []
@@ -121,7 +141,7 @@ def LibrarySearch(input, location, sk, ml):
     for rank, [artist, currStatus, currCode, artistId] in df.iterrows():
         if currStatus == "Success":
             eventList = []
-            [findArtistEventsStatus, events] = sk.findArtistEvents(artist, artistId)
+            [findArtistEventsStatus, events] = sk.findArtistEvents(artist, artistId, dateRange=dr, metroId=loc)
             if findArtistEventsStatus == "Success":
                 for event in events:
                     EO = Event.Event(event)
@@ -135,11 +155,12 @@ def LibrarySearch(input, location, sk, ml):
             artistEvents.append(eventList)
         else:
             artistEvents.append(None)
-
+    '''
     if locationId is not False:
         locEL = EventList.EventList()
         locEL.createEventList(EL.getEventsByMetroId(locationId))
         EL = locEL
+    '''
     #print("Unordered and uncleaned")
     #EL.printEvents()
     EL.cleanEventList()
@@ -148,15 +169,6 @@ def LibrarySearch(input, location, sk, ml):
     EL.orderEventListByDate()
     print("Ordered and sanitized")
     EL.printEvents()
-
-    [startDate, endDate] = smUtil.queeryDateRange()
-
-    if startDate == False or endDate == False:
-        EL = EL.getEventsinTimeWindow(startDate, endDate)
-
-    for event in events:
-        if event.getSearchedArtist() not in artistNames:
-            print(event)
 
 if __name__ == "__main__":
     main()
