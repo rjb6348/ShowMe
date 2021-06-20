@@ -30,18 +30,22 @@ jobs:
         python -m pip install --upgrade pip
         pip install coverage
     - name: Run coverage ShowMeUtilites.py
+      working-directory: ./CommandLine
       run:
           coverage run -m unittest UnitTestShowMeUtilities.py;
           coverage report -m  | grep 'ShowMeUtilities.py'
     - name: Run coverage SongKickAPI.py
+      working-directory: ./CommandLine
       run:
           coverage run -m unittest UnitTestSongKickAPI.py;
           coverage report -m  | grep 'SongKickAPI.py'
     - name: Run coverage Event.py
+      working-directory: ./CommandLine
       run:
           coverage run -m unittest UnitTestEvent.py;
           coverage report -m  | grep 'Event.py'
     - name: Run coverage EventList.py
+      working-directory: ./CommandLine
       run:
           coverage run -m unittest UnitTestEventList.py;
           coverage report -m  | grep 'EventList.py'
