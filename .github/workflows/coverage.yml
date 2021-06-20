@@ -1,0 +1,49 @@
+# This workflow will upload a Python Package using Twine when a release is created
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Coverage
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install unittest
+        pip install coverage
+    - name: Run coverage ShowMeUtilites.py
+      run:
+          coverage run -m unittest UnitTestShowMeUtilities.py
+          coverage report -m  | grep 'ShowMeUtilities.py'
+    - name: Run coverage SongKickAPI.py
+      run:
+          coverage run -m unittest UnitTestSongKickAPI.py
+          coverage report -m  | grep 'SongKickAPI.py'
+    - name: Run coverage Event.py
+      run:
+          coverage run -m unittest UnitTestEvent.py
+          coverage report -m  | grep 'Event.py'
+    - name: Run coverage EventList.py
+      run:
+          coverage run -m unittest UnitTestEventList.py
+          coverage report -m  | grep 'EventList.py'
+
