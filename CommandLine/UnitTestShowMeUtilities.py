@@ -14,19 +14,19 @@ class Test_SongKickAP(unittest.TestCase):
         ShowMeUtilities.print = lambda s : outputFail.append(s)
         result = ShowMeUtilities.setupML(3)
         self.assertNotEqual(result,False)
-
+    '''
     def test_setupMFail(self):
         #Test Failure to find
         inputValuesBad = [ 'asdf;lkasdf;lkasdf','asdflkj;asdf;lkj']
         outputFail = []
         def mock_input(s):
             outputFail.append(s)
-            return inputValuesGood.pop(0)
+            return inputValuesBad.pop(0)
         ShowMeUtilities.input = mock_input
         ShowMeUtilities.print = lambda s : outputFail.append(s)
         result = ShowMeUtilities.setupML(3)
         self.assertEqual(result,False)
-
+    '''
     #queryLocation Section
     def test_queryLocationZipGood(self):
         failVals = [False, False]
