@@ -31,18 +31,18 @@ jobs:
         pip install coverage
     - name: Run coverage ShowMeUtilites.py
       run:
-          coverage run -m unittest UnitTestShowMeUtilities.py
+          coverage run -m unittest UnitTestShowMeUtilities.py;
           coverage report -m  | grep 'ShowMeUtilities.py'
     - name: Run coverage SongKickAPI.py
       run:
-          coverage run -m unittest UnitTestSongKickAPI.py
+          coverage run -m unittest UnitTestSongKickAPI.py;
           coverage report -m  | grep 'SongKickAPI.py'
     - name: Run coverage Event.py
       run:
-          coverage run -m unittest UnitTestEvent.py
+          coverage run -m unittest UnitTestEvent.py;
           coverage report -m  | grep 'Event.py'
     - name: Run coverage EventList.py
       run:
-          coverage run -m unittest UnitTestEventList.py
+          coverage run -m unittest UnitTestEventList.py;
           coverage report -m  | grep 'EventList.py'
 
