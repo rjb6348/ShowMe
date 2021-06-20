@@ -38,8 +38,17 @@ class SongKickAPI(object):
             returnData = "Invalid Request Code: " + r.status_code
         return [status, returnData]
 
-    def findArtistEvents(self, Artist, ArtistId):
+    def findArtistEvents(self, Artist, ArtistId, dateRange=None, metroId=None):
         Search_Event_URL = self.Base_Artist_Event_Search_URL.format(ArtistId, SongkickAPIKey)
+        additions = ""
+        if dateRange is not None:
+            min_date = dateRange[0]
+            max_date = dateRange[1]
+            additions = additions + "&min_date=" + str(min_date) + "&max_date=" + str(max_date)
+        if metroId is not None:
+            additions = additions + "&metro_area_id=" + str(metroId) 
+        
+        Search_Event_URL = Search_Event_URL + additions
         r = requests.get(Search_Event_URL)
         valid_request = r.status_code in range(200,299)
         if valid_request:
@@ -55,11 +64,17 @@ class SongKickAPI(object):
                 status = "Success"
         else:
             status = "Failure"
-            returnData = "Invalid Request Code: " + r.status_code
+            returnData = "Invalid Request Code: " + str(r.status_code)
         return [status, returnData]
 
-    def findLocationEvents(self, Location, LocationId):
+    def findLocationEvents(self, Location, LocationId, dateRange=None):
         Search_Location_Event_URL = self.Base_Location_Event_Search_URL.format(LocationId, SongkickAPIKey)
+        additions = ""
+        if dateRange is not None:
+            min_date = dateRange[0]
+            max_date = dateRange[1]
+            additions = additions + "&min_date=" + str(min_date) + "&max_date=" + str(max_date)
+        Search_Location_Event_URL = Search_Location_Event_URL + additions
         r = requests.get(Search_Location_Event_URL)
         valid_request = r.status_code in range(200,299)
         if valid_request:

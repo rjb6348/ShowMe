@@ -7,23 +7,32 @@ class EventList(object):
         self.Events = []
 
     def addEventJson(self, event):
-        self.Events.append(Event.Event(event))
+        Ev = Event.Event(event)
+        if Ev.getNumPerformances() > 0:
+            self.Events.append(Ev)
+        #else debug statement I guess
 
     def addEvent(self, event):
-        self.Events.append(event)
+        if event.getNumPerformances() > 0:
+            self.Events.append(event)
+        #else debug statement I guess
 
     def createEventList(self, events):
-        if len(self.Events) > 0 :
-            print("EventList already contains events")
-        else:
-            self.Events = events
-
-    def createEventListJson(self, events):
-        if len(self.Events) > 0 :
+        if len(self.Events) > 0:
             print("EventList already contains events")
         else:
             for event in events:
-                self.Events.append(Event.Event(event))
+                if event.getNumPerformances() > 0:
+                    self.Events.append(event)
+
+    def createEventListJson(self, events):
+        if len(self.Events) > 0:
+            print("EventList already contains events")
+        else:
+            for event in events:
+                Ev = Event.Event(event)
+                if Ev.getNumPerformances() > 0:
+                    self.Events.append(Event.Event(event))
 
     def getEventsByMetroId(self, metroID):
         returnEvents = []
@@ -50,7 +59,7 @@ class EventList(object):
         if len(self.Events) == 0:
             print("No Shows Found")
         for event in self.Events:
-            print(event.getHeadliner() + " is coming to " + event.getCity() + " on " + event.getDate() + " at the " + event.getVenueName())
+            print(event.getSearchedArtist() + " will be coming to " + event.getCity() + " on " + event.getDate() + " at the " + event.getVenueName())
 
     def checkforEvents(self):
         if len(self.Events)>0:
@@ -79,12 +88,19 @@ class EventList(object):
         sorteddates = dict(sorted(dateIdDict.items(), key=lambda item : item[1]))
         for id in sorteddates.keys():
             tempEventList.append(self.getEventById(id))
-
         self.Events = tempEventList
 
     def getEvents(self):
         return self.Events
 
+    def getEventsinTimeWindow(self, startDate, endDate):
+        tempEventList = []
+        for event in self.Events:
+            tempEventId = event.getEventId()
+            tempDate = event.getDate()
+            if tempDate < endDate and tempDate > startDate:
+                tempEventList.append(event)
+        return tempEventList
 
     
 

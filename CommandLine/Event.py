@@ -6,6 +6,7 @@ class Event(object):
         self.eventName = None
         self.ArtistList = []
         self.ArtistIds = []
+        self.ArtistSearched = None
         self.city = self.eventJson['location']['city']
         self.metroId = self.eventJson['venue']['metroArea']['id']
         self.date = self.eventJson['start']['date']
@@ -17,13 +18,20 @@ class Event(object):
         self.venueURI = self.eventJson['venue']['uri']
         self.eventName = self.eventJson['displayName']
         self.eventURI = self.eventJson['uri']
-        self.headliner = self.eventJson['performance'][0]['displayName']
         self.EventId = self.eventJson['id']
-        for artistInfo in self.performances:
-            self.ArtistList.append(artistInfo['displayName'])
+        if len(self.eventJson['performance'])>0:
+            self.headliner = self.eventJson['performance'][0]['displayName']
+            for artistInfo in self.performances:
+                self.ArtistList.append(artistInfo['displayName'])
+            for artistInfo in self.performances:
+                self.ArtistIds.append(artistInfo['artist']['id'])
+        else:
+            self.headliner = []
+            self.ArtistList = []
+            self.ArtistIds = []
 
-        for artistInfo in self.performances:
-            self.ArtistIds.append(artistInfo['artist']['id'])
+    def setSearchedArtist(self, Artist):
+        self.ArtistSearched = Artist
 
     def getCity(self):
         return self.city
@@ -61,8 +69,18 @@ class Event(object):
     def getHeadliner(self):
         return self.headliner
 
+    def getSearchedArtist(self):
+        if self.ArtistSearched != None:
+            return self.ArtistSearched
+        else: 
+            return self.getHeadliner()
+
+
     def getEventJson(self):
         return self.eventJson
 
     def getEventId(self):
         return self.EventId
+
+    def getNumPerformances(self):
+        return len(self.eventJson['performance'])

@@ -11,16 +11,25 @@ def parseSearchResultsLocationCity(data, cityString, stateString):
         cityList = []
         matchingCityind = []
         citStateList = []
-        if totalResults == 1:
-            return ["Success",locationlist[0]['metroArea']['id']]
+        if totalResults == 0:
+            return ["Failure","No Results"]
+        elif totalResults == 1:
+            if 'state' in locationlist[0]['city'].keys():
+                if locationlist[0]['city']['state']['displayName'].lower() == stateString.lower():
+                    return ["Success",locationlist[0]['metroArea']['id']]
+                else:
+                    return ["Failure","City in wrong State"]
+            else:
+                return ["Failure","Matching City not in US"]
         else:
             for i in range(0,len(locationlist)):
                 if locationlist[i]['city']['displayName'].lower() == cityString.lower():
                     cityList.append(locationlist[i]['metroArea']['id'])
                     matchingCityind.append(i)
             for i in range(0,len(matchingCityind)):
-                if locationlist[i]['city']['state']['displayName'].lower() == stateString.lower():
-                    citStateList.append(locationlist[i]['metroArea']['id'])
+                if 'state' in locationlist[i]['city'].keys():
+                    if locationlist[i]['city']['state']['displayName'].lower() == stateString.lower():
+                        citStateList.append(locationlist[i]['metroArea']['id'])
             if len(cityList)==0:
                 print("Error, City entered and ")
                 return ["Failure", 'A Location that is not a city found for: ' + cityString]
@@ -30,7 +39,7 @@ def parseSearchResultsLocationCity(data, cityString, stateString):
                 if len(citStateList) == 0:
                     return ["Failure", "City Exists, but not in provided State"]
                 elif len(citStateList) == 1:
-                    return ["Success", cityList[0]]
+                    return ["Success", citStateList[0]]
                 else:
                     return ["Failure", "Multiple Cities exist with Name x in State y"]
 
