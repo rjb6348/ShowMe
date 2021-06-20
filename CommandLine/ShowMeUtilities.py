@@ -32,21 +32,24 @@ def checkToQueryLocation(searchType, sk):
             citySpecific = input("Do you want to see tours in a specific city? (y/n): ")
             if citySpecific.lower() == "y":
                 cityState =  queryLocation()
+                if cityState == [False,False]:
+                    return [[False,False], False]
                 again = False
             elif citySpecific.lower() == "n":
                 return [[False,False], False]
             else:
                 print("Waning:  Unrecognized input. Only y or n accepted")
-            continue
     else:
         cityState = queryLocation()
+        if cityState == [False,False]:
+            return [[False,False], False]
     while locFound == False:
         [locStatus, locId] = sk.findCity(cityState[0],cityState[1])
         if locStatus.lower() == 'success':
             locFound = True
         else:
             print("City, State Combination not found.")
-            again = input("Try again? (y/n): ")
+            again = againQuery()
             if again:
                 cityState = queryLocation()
             else: 
@@ -73,7 +76,12 @@ def queryLocation():
                 zipcode = zcdb[int(zip)]
                 zipFound = True
             except:
-                print("Zip " + zip + " not found.  Try again")
+                print("Zip " + zip + " not found.")
+                again = againQuery()
+                if again:
+                    continue
+                else:
+                    return [False, False]
         searchQuery =  [zipcode.city, zipcode.state]
     else:
         print("I do not understand how we got here")
@@ -145,6 +153,17 @@ def createSearchTypeQuery(searchType):
                 results = ["long_term","medium_term","short_term"]
     return results
 
+def againQuery():
+    again = True
+    while again == True:
+        againIn = input("Try again (y/n): ")
+        if againIn.lower() == 'n':
+            return False
+        elif againIn.lower() == 'y':
+            return True
+        else:
+            print("Waning:  Unrecognized input. Only y or n accepted")
+
 def queryStandard(options):
     result = None
     while result == None:
@@ -155,28 +174,18 @@ def queryStandard(options):
 
         if inputString == None or inputString == "":
             print("Warning: No input selected.")
-            again = True
-            while again == True:
-                againIn = input("Try again (y/n): ")
-                if againIn.lower() == 'n':
-                    return False
-                elif againIn.lower() == 'y':
-                    again = False
-                else:
-                    print("Waning:  Unrecognized input. Only y or n accepted")
-            continue
+            again = againQuery()
+            if again:
+                continue
+            else:
+                return False
         elif inputString.isnumeric() == False or int(inputString) not in range(1, len(options)+1):
             print("Warning: Enter a number betwee 1 and " + str(len(options)))
-            again = True
-            while again == True:
-                againIn = input("Try again (y/n): ")
-                if againIn.lower() == 'n':
-                    return [False]
-                elif againIn.lower() == 'y':
-                    again = False
-                else:
-                    print("Waning:  Unrecognized input. Only y or n accepted")
-            continue
+            again = againQuery()
+            if again:
+                continue
+            else:
+                return False
         elif int(inputString) in range(1, len(options)+1):
             return int(inputString)
         else:

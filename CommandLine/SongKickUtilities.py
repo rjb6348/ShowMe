@@ -11,7 +11,9 @@ def parseSearchResultsLocationCity(data, cityString, stateString):
         cityList = []
         matchingCityind = []
         citStateList = []
-        if totalResults == 1:
+        if totalResults == 0:
+            return ["Failure","No Results"]
+        elif totalResults == 1:
             if 'state' in locationlist[0]['city'].keys():
                 if locationlist[0]['city']['state']['displayName'].lower() == stateString.lower():
                     return ["Success",locationlist[0]['metroArea']['id']]
