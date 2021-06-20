@@ -49,7 +49,7 @@ def ArtistSearch(input, location, sk, dateRange):
         dr=None
     else:
         dr = dateRange
-    if location[0]:
+    if location[1] == False:
         loc = None
     else:
         loc = location[1]
@@ -94,7 +94,7 @@ def LibrarySearch(input, location, sk, ml, dateRange):
         dr=None
     else:
         dr = dateRange
-    if location[0]:
+    if location[1] == False:
         loc = None
     else:
         loc = location[1]
@@ -155,12 +155,12 @@ def LibrarySearch(input, location, sk, ml, dateRange):
             artistEvents.append(eventList)
         else:
             artistEvents.append(None)
-    '''
+    
     if locationId is not False:
         locEL = EventList.EventList()
         locEL.createEventList(EL.getEventsByMetroId(locationId))
         EL = locEL
-    '''
+    
     #print("Unordered and uncleaned")
     #EL.printEvents()
     EL.cleanEventList()

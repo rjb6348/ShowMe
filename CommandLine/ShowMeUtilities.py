@@ -24,46 +24,6 @@ def setupML(searchType):
         print("Login Failed Unexpectedly")
         return False
 
-def promptForSearchTypeOld():
-    #Step1: Get User Input
-    readyToSearch = False
-    while readyToSearch == False:
-        print("How do you want to find concerts?")
-        print("1: Search by Artist")
-        print("2: Search by Location")
-        print("3: Search by Music Library")
-        searchType = input("Enter Search Type (1-3): ")
-        if searchType == None or searchType == "":
-            print("Warning: No input selected.")
-            again = True
-            while again == True:
-                againIn = input("Try again (y/n): ")
-                if againIn.lower() == 'n':
-                    return False
-                elif againIn.lower() == 'y':
-                    again = False
-                else:
-                        print("Waning:  Unrecognized input. Only y or n accepted")
-                continue
-        elif searchType.isnumeric() == False or int(searchType) not in range(1,4):
-            print("Warning: Enter an option between 1 and 3")
-            again = True
-            while again == True:
-                againIn = input("Try again (y/n): ")
-                if againIn.lower() == 'n':
-                    return False
-                elif againIn.lower() == 'y':
-                    again = False
-                else:
-                    print("Waning:  Unrecognized input. Only y or n accepted")
-                continue
-        elif int(searchType) in range(1,4):
-            return int(searchType)
-        else:
-            print("Unrecognized or unhandled input.  Bad Job")
-            return False
-
-
 def checkToQueryLocation(searchType, sk):
     locFound = False
     if searchType != 2:
@@ -120,7 +80,6 @@ def queryLocation():
         searchQuery = [False, False]
     return searchQuery
 
-
 def queeryDateRange():
     again = True
     while again == True:
@@ -161,11 +120,6 @@ def queeryDateRange():
             print("Warning: End Date " + endDate + " not in correct format (mm/dd/yyyy)")
 
     return [startDate, endDate]
-    
-
-
-
-
 
 def promptForSearchType():
     results = queryStandard(["Search by Artist","Search by Location","Search by Music Library"])
@@ -190,7 +144,6 @@ def createSearchTypeQuery(searchType):
             elif int(results) == 4:
                 results = ["long_term","medium_term","short_term"]
     return results
-
 
 def queryStandard(options):
     result = None
@@ -229,4 +182,3 @@ def queryStandard(options):
         else:
             print("Unhandled Input")
             return False
-

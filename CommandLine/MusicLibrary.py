@@ -35,7 +35,10 @@ class SpotifyUserInteractions(object):
             token = util.prompt_for_user_token(username, show_dialog=True, scope=self.scope, client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_uri)
             sp = spotipy.Spotify(auth = token,oauth_manager=SpotifyOAuth(scope=self.scope,client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_uri))
             self.token = token
-            self.userName = sp.me()['display_name']
+            try:
+                self.userName = sp.me()['display_name']
+            except:
+                self.userName = username
             self.sp = sp
             return "Success"
         except:
