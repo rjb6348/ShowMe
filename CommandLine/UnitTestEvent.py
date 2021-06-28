@@ -9,54 +9,54 @@ TestEvent = {'id': 39599995, 'displayName': 'Hurricane Festival 2021 (CANCELLED)
 class Test_Event(unittest.TestCase):
 
     def test_getCity(self):
-        self.assertEqual(Event.Event(TestEvent).getCity(),"Scheessel, Germany")
-        self.assertNotEqual(Event.Event(TestEvent).getCity(),"LA")
+        self.assertEqual(Event.Event(TestEvent).get_city(),"Scheessel, Germany")
+        self.assertNotEqual(Event.Event(TestEvent).get_city(),"LA")
 
     def test_getMetroId(self):
-        self.assertEqual(Event.Event(TestEvent).getMetroId(),55800)
-        self.assertNotEqual(Event.Event(TestEvent).getMetroId(),0)
+        self.assertEqual(Event.Event(TestEvent).get_metro_id(),55800)
+        self.assertNotEqual(Event.Event(TestEvent).get_metro_id(),0)
 
     def test_getDate(self):
-        self.assertEqual(Event.Event(TestEvent).getDate(),'2021-06-18')
-        self.assertNotEqual(Event.Event(TestEvent).getDate(),0)
+        self.assertEqual(Event.Event(TestEvent).get_date(),'2021-06-18')
+        self.assertNotEqual(Event.Event(TestEvent).get_date(),0)
 
     def test_getArtists(self):
         CorrectArtists = ['The Killers', 'Kings of Leon', 'Twenty One Pilots', 'The Lumineers', 'Of Monsters and Men', 'Martin Garrix', 'Bring Me The Horizon', 'Foals', 'Rise Against', 'Jimmy Eat World', 'Sum 41', 'Bombay Bicycle Club', 'Oh Wonder', 'Mayday Parade', 'Catfish and the Bottlemen', 'The Hives', 'Killswitch Engage', 'Bad Religion', 'Nothing But Thieves', 'Wolf Alice', 'LP', 'AURORA', 'SOFI TUKKER', 'Tones and I', 'Dermot Kennedy', 'Half Moon Run', 'Neck Deep', 'Mando Diao', 'Modeselektor', 'Millencolin', 'Sam Fender', 'Seeed', 'Skindred', 'While She Sleeps', 'The Dead South', 'Deichkind', 'Kollektiv Turmstrasse', 'Fontaines D.C.', 'Kontra K', 'Georgia', 'Left Boy', 'SDP', 'Giant Rooks', 'Von wegen Lisbeth', 'Miya Folick', 'Fil Bo Riva', 'Blues Pills', 'Frittenbude', 'KitschKrieg', 'Thees Uhlmann', 'Antilopen Gang', 'JC Stewart', 'Brutus', 'Kelvyn Colt', 'Mine', 'Nura', 'BHZ', 'Turbostaat', 'Kummer', 'Swiss & Die Andern', 'Ferdinand', 'Hot Milk', 'Blond', 'Schrottgrenze', 'Flash Forward', 'Helgen', 'Juju (DE)', 'LARI LUKE', 'Lari Luke / Larissa Rieß']
-        self.assertEqual(Event.Event(TestEvent).getArtists(),CorrectArtists)
-        self.assertNotEqual(Event.Event(TestEvent).getArtists(),0)
+        self.assertEqual(Event.Event(TestEvent).get_artists(),CorrectArtists)
+        self.assertNotEqual(Event.Event(TestEvent).get_artists(),0)
 
     def test_getArtistIds(self):
         CorrectIds = [555021, 2847, 3123851, 2827981, 3631016, 5003643, 347077, 525043, 280768, 82317, 206565, 578704, 8418168, 158028, 3347901, 171134, 482370, 70768, 4441173, 4126816, 118548, 8871744, 8796259, 9633729, 8732299, 3878406, 6054939, 134966, 332532, 554312, 6907314, 158809, 341164, 2175276, 4394948, 215923, 554315, 9231359, 5953009, 524189, 5671454, 336284, 8475248, 6496844, 6546674, 8804369, 4934323, 928215, 9646089, 2458961, 7067029, 9539884, 285653, 9077304, 51273, 498960, 9660459, 454343, 10087912, 9068234, 7744699, 1954301, 4743, 528101, 4664898, 8400898, 9960469, 10119896, 9836144]
-        self.assertEqual(Event.Event(TestEvent).getArtistIds(),CorrectIds)
-        self.assertNotEqual(Event.Event(TestEvent).getArtistIds(),0)
+        self.assertEqual(Event.Event(TestEvent).get_artist_ids(),CorrectIds)
+        self.assertNotEqual(Event.Event(TestEvent).get_artist_ids(),0)
 
     def test_getVenueName(self):
-        self.assertEqual(Event.Event(TestEvent).getVenueName(),'Eichenring')
-        self.assertNotEqual(Event.Event(TestEvent).getVenueName(),'The Trocadero')
+        self.assertEqual(Event.Event(TestEvent).get_venue_name(),'Eichenring')
+        self.assertNotEqual(Event.Event(TestEvent).get_venue_name(),'The Trocadero')
 
     def test_getVenueId(self):
-        self.assertEqual(Event.Event(TestEvent).getVenueId(),141903)
-        self.assertNotEqual(Event.Event(TestEvent).getVenueId(),0)
+        self.assertEqual(Event.Event(TestEvent).get_venue_id(),141903)
+        self.assertNotEqual(Event.Event(TestEvent).get_venue_id(),0)
 
     def test_getVenueURI(self):
-        self.assertEqual(Event.Event(TestEvent).getVenueURI(),'https://www.songkick.com/venues/141903-eichenring?utm_source=60091&utm_medium=partner')
-        self.assertNotEqual(Event.Event(TestEvent).getVenueURI(),'google.com')
+        self.assertEqual(Event.Event(TestEvent).get_venue_uri(),'https://www.songkick.com/venues/141903-eichenring?utm_source=60091&utm_medium=partner')
+        self.assertNotEqual(Event.Event(TestEvent).get_venue_uri(),'google.com')
 
     def test_getEventName(self):
-        self.assertEqual(Event.Event(TestEvent).getEventName(),'Hurricane Festival 2021 (CANCELLED) ')
-        self.assertNotEqual(Event.Event(TestEvent).getEventName(),'FireFly')
+        self.assertEqual(Event.Event(TestEvent).get_event_name(),'Hurricane Festival 2021 (CANCELLED) ')
+        self.assertNotEqual(Event.Event(TestEvent).get_event_name(),'FireFly')
 
     def test_getEventURI(self):
-        self.assertEqual(Event.Event(TestEvent).getEventURI(),'https://www.songkick.com/festivals/919-hurricane/id/39599995-hurricane-festival-2021?utm_source=60091&utm_medium=partner')
-        self.assertNotEqual(Event.Event(TestEvent).getEventURI(),'google.com')
+        self.assertEqual(Event.Event(TestEvent).get_event_uri(),'https://www.songkick.com/festivals/919-hurricane/id/39599995-hurricane-festival-2021?utm_source=60091&utm_medium=partner')
+        self.assertNotEqual(Event.Event(TestEvent).get_event_uri(),'google.com')
     
     def test_getHeadliner(self):
-        self.assertEqual(Event.Event(TestEvent).getHeadliner(),'The Killers')
-        self.assertNotEqual(Event.Event(TestEvent).getHeadliner(),'Kings of Leon')
+        self.assertEqual(Event.Event(TestEvent).get_headliner(),'The Killers')
+        self.assertNotEqual(Event.Event(TestEvent).get_headliner(),'Kings of Leon')
 
     def test_getEventId(self):
-        self.assertEqual(Event.Event(TestEvent).getEventId(),39599995)
-        self.assertNotEqual(Event.Event(TestEvent).getEventId(),'0')
+        self.assertEqual(Event.Event(TestEvent).get_event_id(),39599995)
+        self.assertNotEqual(Event.Event(TestEvent).get_event_id(),'0')
 
     #Two functions untested because of test vector size
 
