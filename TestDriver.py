@@ -48,17 +48,13 @@ def testSongKickApi():
     #print(Events)
 
 def testCombo():
+    #Variable Setup
     client_id = '1b55c01382b740c0b4c6fd22f7065fd6'
     client_secret = '0d1c6411f69342359bdaca85134120eb'
     redirect_uri = 'http://localhost'
-
     artistIds, artistNames, artistEvents, status, statusCode = [],[],[],[],[]
-    #artistIds = []
-    #artistNames = []
-    #artistEvents = []
-    #status = []
-    #statusCode = []
 
+    #initialize services classes
     ml = MusicLibrary.SpotifyUserInteractions(client_id, client_secret, redirect_uri)
     sk = SongKickAPI.SongKickAPI()
 

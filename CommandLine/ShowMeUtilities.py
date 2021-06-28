@@ -1,148 +1,161 @@
+import datetime
 from pyzipcode import ZipCodeDatabase
 import MusicLibrary
-import datetime
-def setupML(searchType):
+
+
+def setup_music_library():
     print("Time to Login to Spotify!")
     client_id = '1b55c01382b740c0b4c6fd22f7065fd6'
     client_secret = '0d1c6411f69342359bdaca85134120eb'
     redirect_uri = 'http://localhost'
-    loggedIn = False
+    logged_in = False
     try:
-        ml = MusicLibrary.SpotifyUserInteractions(client_id, client_secret, redirect_uri)
-        while loggedIn == False:
-            username = input("What's your username: ")
-            loginStatus = ml.login(username)
-            if loginStatus.lower() != "success":
+        music_library = MusicLibrary.SpotifyUserInteractions(
+            client_id, client_secret, redirect_uri)
+        while logged_in is False:
+            user_name = input("What's your username: ")
+            login_status = music_library.login(user_name)
+            if login_status.lower() != "success":
                 print("Login Failed.")
                 again = input("Try again (y/n): ")
                 if again == 'n':
                     break
             else:
-                loggedIn = True
-        return ml
+                logged_in = True
+        return music_library
     except:
         print("Login Failed Unexpectedly")
         return False
 
-def checkToQueryLocation(searchType, sk):
-    locFound = False
-    if searchType != 2:
+
+def check_to_query_location(search_type, sk):
+    loc_found = False
+    if search_type != 2:
         again = True
-        while again == True:
-            citySpecific = input("Do you want to see tours in a specific city? (y/n): ")
-            if citySpecific.lower() == "y":
-                cityState =  queryLocation()
-                if cityState == [False,False]:
-                    return [[False,False], False]
+        while again is True:
+            city_specific = input(
+                "Do you want to see tours in a specific city? (y/n): ")
+            if city_specific.lower() == "y":
+                city_state = query_location()
+                if city_state == [False, False]:
+                    return [[False, False], False]
                 again = False
-            elif citySpecific.lower() == "n":
-                return [[False,False], False]
+            elif city_specific.lower() == "n":
+                return [[False, False], False]
             else:
                 print("Waning:  Unrecognized input. Only y or n accepted")
     else:
-        cityState = queryLocation()
-        if cityState == [False,False]:
-            return [[False,False], False]
-    while locFound == False:
-        [locStatus, locId] = sk.findCity(cityState[0],cityState[1])
-        if locStatus.lower() == 'success':
-            locFound = True
+        city_state = query_location()
+        if city_state == [False, False]:
+            return [[False, False], False]
+    while loc_found is False:
+        [loc_status, locId] = sk.findCity(city_state[0], city_state[1])
+        if loc_status.lower() == 'success':
+            loc_found = True
         else:
             print("City, State Combination not found.")
-            again = againQuery()
+            again = again_query()
             if again:
-                cityState = queryLocation()
-            else: 
+                city_state = query_location()
+            else:
                 return False
-    return [cityState, locId]
+    return [city_state, locId]
 
-def queryLocation():
-    results = queryStandard(["City & State", "Zip"])
+
+def query_location():
+    results = query_standard(["City & State", "Zip"])
     if results == False:
-        searchQuery = [False, False]
+        search_query = [False, False]
     elif results == 1:
-        #validLoc = False TODO: Add location validation here
-        #while validLoc == False:
+        # validLoc = False TODO: Add location validation here
+        # while validLoc == False:
         state = input("Enter two letter State Abbreviation (ex: PA): ")
         city = input("Enter the City: ")
         #    validLoc = validateLoc(city, state)
-        searchQuery = [city, state]
+        search_query = [city, state]
     elif results == 2:
         zcdb = ZipCodeDatabase()
-        zipFound = False
-        while zipFound == False:
+        zip_found = False
+        while zip_found is False:
             try:
                 zip = input("Enter Zip Code: ")
                 zipcode = zcdb[int(zip)]
-                zipFound = True
+                zip_found = True
             except:
                 print("Zip " + zip + " not found.")
-                again = againQuery()
+                again = again_query()
                 if again:
                     continue
                 else:
                     return [False, False]
-        searchQuery =  [zipcode.city, zipcode.state]
+        search_query = [zipcode.city, zipcode.state]
     else:
         print("I do not understand how we got here")
-        searchQuery = [False, False]
-    return searchQuery
+        search_query = [False, False]
+    return search_query
 
-def queeryDateRange():
+
+def query_date_range():
     again = True
-    while again == True:
-        dateFilter = input("Do you want to search results by Date? (y/n) ")
-        if dateFilter.lower() == "y":
+    while again is True:
+        date_filter = input("Do you want to search results by Date? (y/n) ")
+        if date_filter.lower() == "y":
             again = False
-        elif dateFilter.lower() == "n":
+        elif date_filter.lower() == "n":
             return [False, False]
         else:
             print("Waning:  Unrecognized input. Only y or n accepted")
-    startDateGood = False
-    while startDateGood == False:
+    start_date_good = False
+    while start_date_good is False:
         print('What date do you want to start searching from? (mm/dd/yyyy)')
-        startDate = input("Start Date: ")
+        start_date = input("Start Date: ")
         try:
-            month1, day1, year1 = startDate.split('/')
-            date1 = datetime.datetime(int(year1),int(month1),int(day1))
-            if date1 < datetime.datetime.combine(datetime.date.today(), datetime.time(0,0)):
+            month1, day1, year1 = start_date.split('/')
+            date1 = datetime.datetime(int(year1), int(month1), int(day1))
+            if date1 < datetime.datetime.combine(datetime.date.today(), datetime.time(0, 0)):
                 print("Warning: Start date needs to be after today")
             else:
-                startDateGood = True
+                start_date_good = True
         except ValueError:
-            print("Warning: Start Date " + startDate + " not in correct format (mm/dd/yyyy)")
-    endDateGood = False
-    while endDateGood == False:
+            print("Warning: Start Date " + start_date +
+                  " not in correct format (mm/dd/yyyy)")
+    end_date_good = False
+    while end_date_good is False:
         print('What date do you want to stop searching from? (mm/dd/yyyy)')
-        endDate = input("Stop Date: ")
+        end_date = input("Stop Date: ")
         try:
-            month2, day2, year2 = endDate.split('/')
-            date2 = datetime.datetime(int(year2),int(month2),int(day2))
-            if date2>date1:
-                endDateGood = True
-                startDate = "-".join([year1,month1,day1])
-                endDate = "-".join([year2,month2,day2])
+            month2, day2, year2 = end_date.split('/')
+            date2 = datetime.datetime(int(year2), int(month2), int(day2))
+            if date2 > date1:
+                end_date_good = True
+                start_date = "-".join([year1, month1, day1])
+                end_date = "-".join([year2, month2, day2])
             else:
                 print("Warning: End date has to be after start date of: " + str(date1))
         except ValueError:
-            print("Warning: End Date " + endDate + " not in correct format (mm/dd/yyyy)")
+            print("Warning: End Date " + end_date +
+                  " not in correct format (mm/dd/yyyy)")
 
-    return [startDate, endDate]
+    return [start_date, end_date]
 
-def promptForSearchType():
-    results = queryStandard(["Search by Artist","Search by Location","Search by Music Library"])
+
+def prompt_for_search_type():
+    results = query_standard(
+        ["Search by Artist", "Search by Location", "Search by Music Library"])
     return results
 
-def createSearchTypeQuery(searchType):
-    searchQuery = []
+
+def create_search_type_query(search_type):
+    search_query = []
     results = []
-    if searchType == 1:
-        results = input("What is the artist/band you want to find a tour for?: ")
-    elif searchType == 3:
-        searchQuery = ["Top Artists from Long Term", "Top Artist from Medium Term",
+    if search_type == 1:
+        results = input(
+            "What is the artist/band you want to find a tour for?: ")
+    elif search_type == 3:
+        search_query = ["Top Artists from Long Term", "Top Artist from Medium Term",
                         "Top Artist from Short Term", "Top Artists from each period"]
-        results = queryStandard(searchQuery)
-        if int(results) in range(1,5):
+        results = query_standard(search_query)
+        if int(results) in range(1, 5):
             if int(results) == 1:
                 results = ["long_term"]
             elif int(results) == 2:
@@ -150,44 +163,46 @@ def createSearchTypeQuery(searchType):
             elif int(results) == 3:
                 results = ["long_term"]
             elif int(results) == 4:
-                results = ["long_term","medium_term","short_term"]
+                results = ["long_term", "medium_term", "short_term"]
     return results
 
-def againQuery():
+
+def again_query():
     again = True
-    while again == True:
-        againIn = input("Try again (y/n): ")
-        if againIn.lower() == 'n':
+    while again is True:
+        again_in = input("Try again (y/n): ")
+        if again_in.lower() == 'n':
             return False
-        elif againIn.lower() == 'y':
+        elif again_in.lower() == 'y':
             return True
         else:
             print("Waning:  Unrecognized input. Only y or n accepted")
 
-def queryStandard(options):
-    result = None
-    while result == None:
-        print("Do you want to search by: ")
-        for i in range(1,len(options)+1):
-            print(str(i) + ": " + options[i-1])
-        inputString = input("Search By: ")
 
-        if inputString == None or inputString == "":
+def query_standard(options):
+    result = None
+    while result is None:
+        print("Do you want to search by: ")
+        for i in range(1, len(options)+1):
+            print(str(i) + ": " + options[i-1])
+        input_string = input("Search By: ")
+
+        if input_string is None or input_string == "":
             print("Warning: No input selected.")
-            again = againQuery()
+            again = again_query()
             if again:
                 continue
             else:
                 return False
-        elif inputString.isnumeric() == False or int(inputString) not in range(1, len(options)+1):
+        elif input_string.isnumeric() is False or int(input_string) not in range(1, len(options)+1):
             print("Warning: Enter a number betwee 1 and " + str(len(options)))
-            again = againQuery()
+            again = again_query()
             if again:
                 continue
             else:
                 return False
-        elif int(inputString) in range(1, len(options)+1):
-            return int(inputString)
+        elif int(input_string) in range(1, len(options)+1):
+            return int(input_string)
         else:
             print("Unhandled Input")
             return False
