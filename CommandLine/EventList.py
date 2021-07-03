@@ -1,4 +1,6 @@
 import Event
+
+
 class EventList(object):
 
     def __init__(self, *args, **kwargs):
@@ -6,103 +8,100 @@ class EventList(object):
         self.eventJson = None
         self.Events = []
 
-    def addEventJson(self, event):
+    def add_event_json(self, event):
         Ev = Event.Event(event)
-        if Ev.getNumPerformances() > 0:
+        if Ev.get_num_performances() > 0:
             self.Events.append(Ev)
-        #else debug statement I guess
+        # else debug statement I guess
 
-    def addEvent(self, event):
-        if event.getNumPerformances() > 0:
+    def add_event(self, event):
+        if event.get_num_performances() > 0:
             self.Events.append(event)
-        #else debug statement I guess
+        # else debug statement I guess
 
-    def createEventList(self, events):
+    def create_event_list(self, events):
         if len(self.Events) > 0:
             print("EventList already contains events")
         else:
             for event in events:
-                if event.getNumPerformances() > 0:
+                if event.get_num_performances() > 0:
                     self.Events.append(event)
 
-    def createEventListJson(self, events):
+    def create_event_list_json(self, events):
         if len(self.Events) > 0:
             print("EventList already contains events")
         else:
             for event in events:
                 Ev = Event.Event(event)
-                if Ev.getNumPerformances() > 0:
+                if Ev.get_num_performances() > 0:
                     self.Events.append(Event.Event(event))
 
-    def getEventsByMetroId(self, metroID):
+    def get_events_by_metro_id(self, metroID):
         returnEvents = []
         for event in self.Events:
-            if event.getMetroId() == metroID:
+            if event.get_metro_id() == metroID:
                 returnEvents.append(event)
         return returnEvents
 
-    def getEventsByCity(self, city):
+    def get_events_by_city(self, city):
         returnEvents = []
         for event in self.Events:
-            if event.getCity().lower() == city.lower():
+            if event.get_city().lower() == city.lower():
                 returnEvents.append(event)
         return returnEvents
 
-    def getEventsByArtist(self, artist):
+    def get_events_by_artist(self, artist):
         returnEvents = []
         for event in self.Events:
-            if event.getArtists().lower() == artist.lower():
+            if event.get_artists().lower() == artist.lower():
                 returnEvents.append(event)
         return returnEvents
 
-    def printEvents(self):
+    def print_events(self):
         if len(self.Events) == 0:
             print("No Shows Found")
         for event in self.Events:
-            print(event.getSearchedArtist() + " will be coming to " + event.getCity() + " on " + event.getDate() + " at the " + event.getVenueName())
+            print(event.get_searched_artist() + "\t will be coming to " + event.get_city() +
+                  "\t on " + event.get_date() + "\t at the " + event.get_venue_name())
 
-    def checkforEvents(self):
-        if len(self.Events)>0:
+    def check_for_events(self):
+        if len(self.Events) > 0:
             print("There are Events")
 
-    def cleanEventList(self):
+    def clean_event_list(self):
         tempEventList = []
         for x in self.Events:
             if x not in tempEventList:
                 tempEventList.append(x)
         self.Events = tempEventList
 
-    def getEventById(self, id):
+    def get_event_by_id(self, id):
         for event in self.Events:
-            if event.getEventId() == id:
+            if event.get_event_id() == id:
                 return event
         return False
 
-    def orderEventListByDate(self):
+    def order_event_list_by_date(self):
         dateIdDict = {}
         tempEventList = []
         for event in self.Events:
-            tempEventId = event.getEventId()
-            tempDate = event.getDate()
+            tempEventId = event.get_event_id()
+            tempDate = event.get_date()
             dateIdDict[tempEventId] = tempDate
-        sorteddates = dict(sorted(dateIdDict.items(), key=lambda item : item[1]))
+        sorteddates = dict(
+            sorted(dateIdDict.items(), key=lambda item: item[1]))
         for id in sorteddates.keys():
-            tempEventList.append(self.getEventById(id))
+            tempEventList.append(self.get_event_by_id(id))
         self.Events = tempEventList
 
-    def getEvents(self):
+    def get_events(self):
         return self.Events
 
-    def getEventsinTimeWindow(self, startDate, endDate):
+    def get_events_in_time_window(self, startDate, endDate):
         tempEventList = []
         for event in self.Events:
-            tempEventId = event.getEventId()
-            tempDate = event.getDate()
+            tempEventId = event.get_event_id()
+            tempDate = event.get_date()
             if tempDate < endDate and tempDate > startDate:
                 tempEventList.append(event)
         return tempEventList
-
-    
-
-
-

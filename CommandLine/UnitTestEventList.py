@@ -17,13 +17,13 @@ class Test_EventList(unittest.TestCase):
         #Compare adding a duplicate Event and then compare after cleaning
         Event1 = Event.Event(TestEvent1)
         EL1 = EventList.EventList()
-        EL1.addEvent(Event1)
+        EL1.add_event(Event1)
         EL2 = EventList.EventList()
-        EL2.addEvent(Event1)
-        EL2.addEvent(Event1)
-        self.assertNotEqual(EL1.getEvents(),EL2.getEvents())
-        EL2.cleanEventList()
-        self.assertEqual(EL1.getEvents(),EL2.getEvents())
+        EL2.add_event(Event1)
+        EL2.add_event(Event1)
+        self.assertNotEqual(EL1.get_events(),EL2.get_events())
+        EL2.clean_event_list()
+        self.assertEqual(EL1.get_events(),EL2.get_events())
 
     def test_orderEventListByDate(self):
         #Test Event 2 is Test Event 1 with a different Event id and later start date
@@ -31,14 +31,14 @@ class Test_EventList(unittest.TestCase):
         Event1 = Event.Event(TestEvent1)
         Event2 =  Event.Event(TestEvent2)
         EL1 = EventList.EventList()
-        EL1.addEvent(Event1)
-        EL1.addEvent(Event2)
+        EL1.add_event(Event1)
+        EL1.add_event(Event2)
         EL2 = EventList.EventList()
-        EL2.addEvent(Event2)
-        EL2.addEvent(Event1)
-        self.assertNotEqual(EL1.getEvents(),EL2.getEvents())
-        EL2.orderEventListByDate()
-        self.assertEqual(EL1.getEvents(),EL2.getEvents())
+        EL2.add_event(Event2)
+        EL2.add_event(Event1)
+        self.assertNotEqual(EL1.get_events(),EL2.get_events())
+        EL2.order_event_list_by_date()
+        self.assertEqual(EL1.get_events(),EL2.get_events())
 
 if __name__ == 'main':
     unittest.main()
