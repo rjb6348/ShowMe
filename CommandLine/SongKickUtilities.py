@@ -50,7 +50,7 @@ def parseSearchResultsArtist(data, searchString):
     if totalResults < 1:
         return ["Failure", 'No Artist Found matching description: ' + searchString]
     elif totalResults == 1:
-        return ["Success", resultsPage["results"]["artist"][0]["id"]]
+        return ["Success", resultsPage["results"]["artist"][0]]
     else:
         results = resultsPage["results"]
         artists = results["artist"]
@@ -58,7 +58,7 @@ def parseSearchResultsArtist(data, searchString):
         # Ask For User Input?
         for artist in artists:
             if artist["displayName"].lower() == searchString.lower():
-                artistList.append(artist["id"])
+                artistList.append(artist)
 
         if artistList is None or len(artistList) == 0:
             print("Artist " + searchString + " Not Specific Enough")

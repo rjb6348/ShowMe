@@ -7,16 +7,29 @@ class EventList(object):
         super().__init__(*args, **kwargs)
         self.eventJson = None
         self.Events = []
+        self.event_dictionaries = []
+
+    def update_event_dictionaries(self, event):
+        self.event_dictionaries.append(event.get_event_dict())
+
+    def reset_event_dict(self):
+        self.event_dictionaries.clear()
+        for event in self.Events:
+            self.update_event_dictionaries(event)
+            
 
     def add_event_json(self, event):
         Ev = Event.Event(event)
         if Ev.get_num_performances() > 0:
             self.Events.append(Ev)
+            self.update_event_dictionaries(Ev)
         # else debug statement I guess
 
     def add_event(self, event):
         if event.get_num_performances() > 0:
             self.Events.append(event)
+            self.update_event_dictionaries(event)
+
         # else debug statement I guess
 
     def create_event_list(self, events):
@@ -26,6 +39,8 @@ class EventList(object):
             for event in events:
                 if event.get_num_performances() > 0:
                     self.Events.append(event)
+                    self.update_event_dictionaries(event)
+
 
     def create_event_list_json(self, events):
         if len(self.Events) > 0:
@@ -35,6 +50,8 @@ class EventList(object):
                 Ev = Event.Event(event)
                 if Ev.get_num_performances() > 0:
                     self.Events.append(Event.Event(event))
+                    self.update_event_dictionaries(Event.Event(event))
+
 
     def get_events_by_metro_id(self, metroID):
         returnEvents = []
@@ -73,6 +90,7 @@ class EventList(object):
         for x in self.Events:
             if x not in tempEventList:
                 tempEventList.append(x)
+        self.reset_event_dict()
         self.Events = tempEventList
 
     def get_event_by_id(self, id):
@@ -93,9 +111,13 @@ class EventList(object):
         for id in sorteddates.keys():
             tempEventList.append(self.get_event_by_id(id))
         self.Events = tempEventList
+        self.reset_event_dict()
 
     def get_events(self):
         return self.Events
+
+    def get_event_dictionaries(self):
+        return self.event_dictionaries            
 
     def get_events_in_time_window(self, startDate, endDate):
         tempEventList = []

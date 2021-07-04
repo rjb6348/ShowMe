@@ -48,6 +48,8 @@ class Event(object):
     def __init__(self, EventJson, *args, **kwargs):
         ''' Initialize object with Json returned from SongKick'''
         super().__init__(*args, **kwargs)
+
+        self.event_dict = {}
         self.event_json = EventJson
         self.event_name = None
         self.artist_list = []
@@ -76,9 +78,17 @@ class Event(object):
             self.artist_list = []
             self.artist_ids = []
 
+        self.event_dict['headliner'] = self.headliner
+        self.event_dict['city'] = self.city
+        self.event_dict['date'] = self.date
+        self.event_dict['event_uri'] = self.event_uri
+        self.event_dict['venue_name'] = self.venue_name
+        self.event_dict['searched_artist'] = False
+
     def set_searched_artist(self, artist):
         ''' Set searched artist to associate if multiple at an event'''
         self.artist_searched = artist
+        self.event_dict['searched_artist'] = self.artist_searched
 
     def get_city(self):
         ''' return the city of the event'''
@@ -146,3 +156,6 @@ class Event(object):
     def get_num_performances(self):
         ''' return the number of performances at the event'''
         return len(self.performances)
+
+    def get_event_dict(self):
+        return self.event_dict

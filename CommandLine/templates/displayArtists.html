@@ -1,0 +1,21 @@
+<div class="">
+    <br />
+    <form action="/find_artists_songkick" method="post">
+        <div class="">
+            <center>
+                <button type="submit" class="btn btn-danger spotify_button" id="" style="">
+                    <h4><i class="fab fa-spotify"></i> Find Shows</h4>
+                </button>
+            </center>
+        </div>
+    </form>
+</div>
+<div class="">
+    <div class="">
+        {% for artist in artist_list %}
+        <h1><a href = {{artist.spotify_url}}></href>{{artist.artist_name}}</h1>
+        <div class="inline-block"><img src ={{artist.artist_image}} width="75" height="75"></div>
+        {% endfor %}
+    </div>
+</div>
+
