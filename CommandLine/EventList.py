@@ -17,7 +17,6 @@ class EventList(object):
         for event in self.Events:
             self.update_event_dictionaries(event)
             
-
     def add_event_json(self, event):
         Ev = Event.Event(event)
         if Ev.get_num_performances() > 0:
