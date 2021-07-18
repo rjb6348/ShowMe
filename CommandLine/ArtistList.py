@@ -9,7 +9,10 @@ class ArtistList(object):
         self.artists_dictionaries = []
 
     def add_artist(self, artist):
-        if artist not in self.artists:
+        if self.get_artist_names() is []:
+            self.artists.append(artist)
+            self.add_dict(artist)
+        elif artist.get_artist_name() not in self.get_artist_names():
             self.artists.append(artist)
             self.add_dict(artist)
 
@@ -29,3 +32,9 @@ class ArtistList(object):
 
     def get_artists(self):
         return self.artists
+    
+    def get_artist_names(self):
+        names = []
+        for artist in self.artists:
+            names.append(artist.get_artist_name())
+        return names
