@@ -10,6 +10,7 @@ import SongKickAPI
 import Event
 import EventList
 from forms import BasicForm
+from forms import ArtistResultForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
@@ -23,16 +24,25 @@ if not os.path.exists(caches_folder):
     os.makedirs(caches_folder)
 
 def session_cache_path():
-    return caches_folder + session.get('uuid')
+    uuid_ses = session.get('uuid')
+    if uuid_ses is None:
+        return_exp = caches_folder
+    else:
+        return_exp = caches_folder + session.get('uuid')
+    return return_exp
 
 @app.route('/')
 def index():
-    return f'<a href="/basic_search">[Basic Search]<a/></h2>' \
+    clear_search_keys()
+    return f'<a href="/basic_search">[Basic Search]<a/></h2> | ' \
            f'<a href="/spotify_login">[Login with Spotify]</a> | ' \
+           f'<a href="/spotify_sign_out">[Sign out of Spotify]</a> | ' \
+               
 
 @app.route('/basic_search', methods=['get', 'post'])
 def basic_search():
-    clear_search_keys()
+    if "loc_id" in session.keys():
+        del session["loc_id"]
     search = BasicForm(request.form)
     print("Search was run")
     print(session.keys())
@@ -48,7 +58,7 @@ def basic_search():
                     zip_int = zip_result
                     zipcode = zcdb[int(zip_int)]
                     print(zipcode.city, zipcode.state)
-                    [loc_status, loc_id]  =  song_kick.findCity(zipcode.city, zipcode.state)
+                    [loc_status, loc_id]  =  song_kick.find_city(zipcode.city, zipcode.state)
                     if loc_status.lower() == 'success':
                         session["loc_id"] = loc_id
                         session["city"] = zipcode.city
@@ -59,7 +69,7 @@ def basic_search():
                     return render_template('SearchForm.html', form = search)
             if not artist_result == "":
                 artist_name = artist_result
-                [artist_search_status, artist_json] = song_kick.findArtist(artist_name)
+                [artist_search_status, artist_json] = song_kick.find_artist(artist_name)
                 if artist_search_status.lower() == "success":
                     artist = Artist.Artist()
                     artist.add_songkick_data(artist_json)
@@ -96,12 +106,12 @@ def basic_search_results():
         artist_list = session['artist_list']
         event_list = EventList.EventList()
         for artist in artist_list.get_artists():
-            [find_artist_events_status, events] = song_kick.findArtistEvents(
-                input, artist.get_artist_id(), metroId=loc_id)
+            [find_artist_events_status, events] = song_kick.find_artist_events(
+                artist.get_display_name(), artist.get_artist_id(), metro_id=loc_id)
             if find_artist_events_status.lower() == "success":
                 for event in events:
                     event_object = Event.Event(event)
-                    event_object.set_searched_artist(artist.get_disply_name())
+                    event_object.set_searched_artist(artist.get_display_name())
                     event_list.add_event(event_object)
         if loc_id:
             loc_el = EventList.EventList()
@@ -114,7 +124,7 @@ def basic_search_results():
         return redirect('/display_events')
     elif "loc_id" in session.keys():
         loc_id = session["loc_id"]
-        [find_artist_events_status, events] = song_kick.findLocationEvents(
+        [find_artist_events_status, events] = song_kick.find_location_events(
             session["city"], loc_id)
         event_list = EventList.EventList()
         if find_artist_events_status.lower() == "success":
@@ -162,8 +172,9 @@ def spotify_interactions():
         return redirect('/')
 
     spotify = session['spotify']
-
-    return render_template("spotify_interactions.html",userName=spotify.me()['display_name'])
+    me = spotify.me()
+    print(me)
+    return render_template("spotify_interactions.html",userName=me['display_name'])
 
 @app.route("/go", methods=['POST'])
 def go():
@@ -174,7 +185,15 @@ def go():
         return redirect('/')
 
     spotify = spotipy.Spotify(auth_manager=auth_manager)
-    artists_returned = spotify.current_user_top_artists(limit=data['num_tracks'], time_range=data['time_range'])
+    artists_returned ={}
+    if data['time_range'] == 'all_terms':
+        artists_returned_short = spotify.current_user_top_artists(limit=data['num_tracks'], time_range='short_term')
+        artists_returned_medium = spotify.current_user_top_artists(limit=data['num_tracks'], time_range='medium_term')
+        artists_returned_long = spotify.current_user_top_artists(limit=data['num_tracks'], time_range='long_term')
+        all_artists = artists_returned_short['items'] + artists_returned_medium['items'] + artists_returned_long['items']
+        artists_returned['items'] = all_artists
+    else:
+        artists_returned = spotify.current_user_top_artists(limit=data['num_tracks'], time_range=data['time_range'])
     artist_list = ArtistList.ArtistList()
     for artist_json in artists_returned['items']:
         artist = Artist.Artist()
@@ -184,9 +203,39 @@ def go():
     return redirect('/disp_artists')
 
 @app.route("/disp_artists", methods=['POST', 'GET'])
-def disp_artist():
+def disp_artists():
+    search = ArtistResultForm(request.form)
     artist_list = session['artist_list']
-    return render_template("displayArtists.html", artist_list=artist_list.get_artists_dictionaries())
+    if request.method == 'POST':
+        print("request was post")
+        zip_result = search.searchZip.data.split("value")[-1]
+        if not zip_result == "":
+            song_kick = SongKickAPI.SongKickAPI()
+            if not zip_result == "":
+                zcdb = ZipCodeDatabase()
+                try:
+                    print("trying zip stuff")
+                    zip_int = zip_result
+                    zipcode = zcdb[int(zip_int)]
+                    print(zipcode.city, zipcode.state)
+                    [loc_status, loc_id]  =  song_kick.find_city(zipcode.city, zipcode.state)
+                    if loc_status.lower() == 'success':
+                        session["loc_id"] = loc_id
+                        session["city"] = zipcode.city
+                        return find_artists_songkick()
+                    else:
+                        message = "Location not found in database"
+                        return render_template('displayArtists.html', artist_list=artist_list.get_artists_dictionaries(), form = search)
+                except:
+                    message = "Zip " + zip_result + " not found"
+                    return render_template('displayArtists.html', artist_list=artist_list.get_artists_dictionaries(), form = search)
+            return find_artists_songkick()
+        else:
+            return find_artists_songkick()
+    else:
+        print(request.method)
+    return render_template('displayArtists.html', artist_list=artist_list.get_artists_dictionaries(), form = search)
+
 
 @app.route("/find_artists_songkick", methods=['POST', 'GET'])
 def find_artists_songkick():
@@ -194,7 +243,7 @@ def find_artists_songkick():
     updated_artist_list = ArtistList.ArtistList()
     for artist in artist_list.get_artists():
         song_kick = SongKickAPI.SongKickAPI()
-        [artist_search_status, artist_json] = song_kick.findArtist(artist.get_artist_name())
+        [artist_search_status, artist_json] = song_kick.find_artist(artist.get_artist_name())
         if artist_search_status.lower() == "success":
             artist.add_songkick_data(artist_json)
             updated_artist_list.add_artist(artist)
@@ -207,12 +256,16 @@ def find_tours():
     loc = None
     location_id = False
     artist_list = session['artist_list']
-    #updated_artist_list = ArtistList.ArtistList()
     event_list = EventList.EventList()
+    print(session.keys())
+
+    if "loc_id" in session.keys():
+        location_id = session["loc_id"]
+
     for artist in artist_list.get_artists():
         song_kick = SongKickAPI.SongKickAPI()
-        [find_artist_events_status, events] = song_kick.findArtistEvents(
-            artist.get_artist_name(), artist.get_artist_id(), dateRange=date_range, metroId=loc)
+        [find_artist_events_status, events] = song_kick.find_artist_events(
+            artist.get_artist_name(), artist.get_artist_id(), date_range=date_range, metro_id=loc)
         if find_artist_events_status.lower() == "success":
             for event in events:
                 event_object = Event.Event(event)
@@ -235,10 +288,11 @@ def display_events():
 
 
 @app.route('/spotify_sign_out')
-def sign_out():
+def spotify_sign_out():
     try:
         # Remove the CACHE file (.cache-test) so that a new user can authorize.
-        os.remove(session_cache_path())
+        if session_cache_path() is not caches_folder:
+            os.remove(session_cache_path())
         session.clear()
     except OSError as e:
         print ("Error: %s - %s." % (e.filename, e.strerror))

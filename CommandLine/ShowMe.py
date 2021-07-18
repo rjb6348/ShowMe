@@ -63,7 +63,7 @@ def artist_search(input_arg, location, song_kick, date_range):
         if find_artist_events_status.lower() == "success":
             for event in events:
                 event_object = Event.Event(event)
-                event_object.set_searched_artist(artist.get_disply_name())
+                event_object.set_searched_artist(artist.get_display_name())
                 event_list.add_event(event_object)
         if location[1] is not False:
             loc_el = EventList.EventList()

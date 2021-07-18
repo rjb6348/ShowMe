@@ -78,7 +78,7 @@ class Artist(object):
     def has_songkick_data(self):
         return self.songkick_data
 
-    def get_disply_name(self):
+    def get_display_name(self):
         ''' get artist Name'''
         return self.disply_name
 

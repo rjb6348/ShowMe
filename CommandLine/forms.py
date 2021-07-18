@@ -8,3 +8,6 @@ class BasicForm(FlaskForm):
 
     searchZip = StringField('ZipCode')
     searchArtist = StringField('Artist')
+
+class ArtistResultForm(FlaskForm):
+    searchZip = StringField('ZipCode')
