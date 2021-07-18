@@ -7,227 +7,212 @@ class Test_SongKickAP(unittest.TestCase):
     # ML Section
     def test_setupMLPass(self):
         # Has to be run locally for now
-        inputValuesGood = ['rrbvt']
-        outputFail = []
+        input_values_good = ['rrbvt']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputValuesGood.pop(0)
+            output_fail.append(s)
+            return input_values_good.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
-        result = ShowMeUtilities.setup_music_library(3)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
+        result = ShowMeUtilities.setup_music_library()
         self.assertNotEqual(result, False)
-    '''
-    def test_setupMFail(self):
-        #Test Failure to find
-        inputValuesBad = [ 'asdf;lkasdf;lkasdf','asdflkj;asdf;lkj']
-        outputFail = []
-        def mock_input(s):
-            outputFail.append(s)
-            return inputValuesBad.pop(0)
-        ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s : outputFail.append(s)
-        result = ShowMeUtilities.setupML(3)
-        self.assertEqual(result,False)
-    '''
-    # queryLocation Section
 
-    def test_queryLocationZipGood(self):
+    def test_query_location_zip_good(self):
         failVals = [False, False]
-        inputValuesYesZipValid = ['2', '19147']
-        outputFail = []
+        input_values_yes_zip_valid = ['2', '19147']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputValuesYesZipValid.pop(0)
+            output_fail.append(s)
+            return input_values_yes_zip_valid.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.query_location()
         self.assertEqual(result, ['Philadelphia', 'PA'])
 
-    def test_queryLocationZipBad(self):
-        failVals = [False, False]
-        inputValuesYesZipValid = ['2', '191470', 'n']
-        outputFail = []
+    def test_query_location_zip_bad(self):
+        fail_vals = [False, False]
+        input_values_yes_zip_valid = ['2', '191470', 'n']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputValuesYesZipValid.pop(0)
+            output_fail.append(s)
+            return input_values_yes_zip_valid.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.query_location()
-        self.assertEqual(result, failVals)
+        self.assertEqual(result, fail_vals)
 
-    def test_queryLocationCity(self):
-        failVals = [False, False]
-        inputValuesCity = ['1', 'PA', 'Philadelphia']
-        outputFail = []
+    def test_query_location_city(self):
+        input_values_city = ['1', 'PA', 'Philadelphia']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputValuesCity.pop(0)
+            output_fail.append(s)
+            return input_values_city.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.query_location()
         self.assertEqual(result, ['Philadelphia', 'PA'])
 
     # checkToQueryLocationN Section
-    def test_checkToQueryLocationN(self):
+    def test_check_to_query_location_n(self):
         sk = SongKickAPI.SongKickAPI()
-        failVals = [[False, False], False]
-        inputValuesNo = ['n']
-        outputFail = []
+        fail_vals = [[False, False], False]
+        input_values_no = ['n']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputValuesNo.pop(0)
+            output_fail.append(s)
+            return input_values_no.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.check_to_query_location(3, sk)
-        self.assertEqual(result, failVals)
+        self.assertEqual(result, fail_vals)
 
-    def test_checkToQueryLocationYGoodZip(self):
+    def test_check_to_query_location_y_good_zip(self):
         sk = SongKickAPI.SongKickAPI()
-        failVals = [[False, False], False]
+        fail_vals = [[False, False], False]
 
-        inputValuesYesZipValid = ['y', '2', '19147']
-        outputFail = []
+        input_values_yes_zip_valid = ['y', '2', '19147']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputValuesYesZipValid.pop(0)
+            output_fail.append(s)
+            return input_values_yes_zip_valid.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.check_to_query_location(1, sk)
-        self.assertNotEqual(result, failVals)
+        self.assertNotEqual(result, fail_vals)
 
-    def test_checkToQueryLocationYBadZip(self):
-        sk = SongKickAPI.SongKickAPI()
-        failVals = [[False, False], False]
-        inputValuesYesZipInvalid = ['y', '2', '19000', 'n']
-        outputFail = []
-
-        def mock_input(s):
-            outputFail.append(s)
-            return inputValuesYesZipInvalid.pop(0)
-        ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
-        result = ShowMeUtilities.check_to_query_location(1, sk)
-        self.assertEqual(result, failVals)
-
-    def test_checkToQueryLocationYGoodCity(self):
-        sk = SongKickAPI.SongKickAPI()
-        failVals = [[False, False], False]
-        inputValuesNoCityValid = ['y', '1', 'PA', 'Philadelphia']
-        outputFail = []
+    def test_check_to_query_location_y_bad_zip(self):
+        song_kick = SongKickAPI.SongKickAPI()
+        fail_vals = [[False, False], False]
+        input_values_yes_zip_invalid = ['y', '2', '19000', 'n']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputValuesNoCityValid.pop(0)
+            output_fail.append(s)
+            return input_values_yes_zip_invalid.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
-        result = ShowMeUtilities.check_to_query_location(1, sk)
-        self.assertNotEqual(result, failVals)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
+        result = ShowMeUtilities.check_to_query_location(1, song_kick)
+        self.assertEqual(result, fail_vals)
 
-    def test_checkToQueryLocationYBadCity(self):
-        sk = SongKickAPI.SongKickAPI()
-        failVals = [[False, False], False]
-        inputValuesNoCityInvalid = ['y', '1', 'CA', 'Philadelphia', 'n']
-        outputFail = []
+    def test_check_to_query_location_y_good_city(self):
+        song_kick = SongKickAPI.SongKickAPI()
+        fali_vals = [[False, False], False]
+        input_values_no_city_valid = ['y', '1', 'PA', 'Philadelphia']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputValuesNoCityInvalid.pop(0)
+            output_fail.append(s)
+            return input_values_no_city_valid.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
-        result = ShowMeUtilities.check_to_query_location(2, sk)
-        self.assertEqual(result, failVals)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
+        result = ShowMeUtilities.check_to_query_location(1, song_kick)
+        self.assertNotEqual(result, fali_vals)
 
-    def test_queryStandard1(self):
-        inputArtist = ["1"]
-        outputFail = []
+    def test_check_to_query_location_y_bad_city(self):
+        song_kick = SongKickAPI.SongKickAPI()
+        fail_vals = [[False, False], False]
+        input_values_no_city_invalid = ['y', '1', 'CA', 'Philadelphia', 'n']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputArtist.pop(0)
+            output_fail.append(s)
+            return input_values_no_city_invalid.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
+        result = ShowMeUtilities.check_to_query_location(2, song_kick)
+        self.assertEqual(result, fail_vals)
+
+    def test_query_standard_1(self):
+        input_artist = ["1"]
+        output_fail = []
+
+        def mock_input(s):
+            output_fail.append(s)
+            return input_artist.pop(0)
+        ShowMeUtilities.input = mock_input
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.query_standard(
             ["Search by Artist", "Search by Location", "Search by Music Library"])
         self.assertEqual(result, 1)
 
-    def test_queryStandard2(self):
-        inputArtist = ["2"]
-        outputFail = []
+    def test_query_standard_2(self):
+        input_artist = ["2"]
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputArtist.pop(0)
+            output_fail.append(s)
+            return input_artist.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.query_standard(
             ["Search by Artist", "Search by Location", "Search by Music Library"])
         self.assertEqual(result, 2)
 
-    def test_queryStandard3(self):
-        inputArtist = ["3"]
-        outputFail = []
+    def test_query_standard_3(self):
+        input_artist = ["3"]
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputArtist.pop(0)
+            output_fail.append(s)
+            return input_artist.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.query_standard(
             ["Search by Artist", "Search by Location", "Search by Music Library"])
         self.assertEqual(result, 3)
 
-    def test_queryStandardFail(self):
-        inputArtist = ["4", 'n']
-        outputFail = []
+    def test_query_standard_fail(self):
+        input_artist = ["4", 'n']
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputArtist.pop(0)
+            output_fail.append(s)
+            return input_artist.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.query_standard(
             ["Search by Artist", "Search by Location", "Search by Music Library"])
         self.assertEqual(result, False)
 
-    def test_againy(self):
-        inputagain = ["y"]
-        outputFail = []
+    def test_again_y(self):
+        input_again = ["y"]
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputagain.pop(0)
+            output_fail.append(s)
+            return input_again.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.again_query()
         self.assertEqual(result, True)
 
-    def test_againn(self):
-        inputagain = ["n"]
-        outputFail = []
+    def test_again_n(self):
+        input_again = ["n"]
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputagain.pop(0)
+            output_fail.append(s)
+            return input_again.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.again_query()
         self.assertEqual(result, False)
 
-    def test_againInvalid(self):
-        inputagain = ["", "", "y"]
-        outputFail = []
+    def test_again_invalid(self):
+        input_again = ["", "", "y"]
+        output_fail = []
 
         def mock_input(s):
-            outputFail.append(s)
-            return inputagain.pop(0)
+            output_fail.append(s)
+            return input_again.pop(0)
         ShowMeUtilities.input = mock_input
-        ShowMeUtilities.print = lambda s: outputFail.append(s)
+        ShowMeUtilities.print = lambda s: output_fail.append(s)
         result = ShowMeUtilities.again_query()
         self.assertEqual(result, True)
 
