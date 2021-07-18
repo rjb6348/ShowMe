@@ -28,7 +28,7 @@ def setup_music_library():
         return False
 
 
-def check_to_query_location(search_type, sk):
+def check_to_query_location(search_type, song_kick):
     loc_found = False
     if search_type != 2:
         again = True
@@ -49,7 +49,8 @@ def check_to_query_location(search_type, sk):
         if city_state == [False, False]:
             return [[False, False], False]
     while loc_found is False:
-        [loc_status, locId] = sk.findCity(city_state[0], city_state[1])
+        [loc_status, loc_id] = song_kick.find_city(
+            city_state[0], city_state[1])
         if loc_status.lower() == 'success':
             loc_found = True
         else:
@@ -59,30 +60,27 @@ def check_to_query_location(search_type, sk):
                 city_state = query_location()
             else:
                 return False
-    return [city_state, locId]
+    return [city_state, loc_id]
 
 
 def query_location():
     results = query_standard(["City & State", "Zip"])
-    if results == False:
+    if results is False:
         search_query = [False, False]
     elif results == 1:
-        # validLoc = False TODO: Add location validation here
-        # while validLoc == False:
         state = input("Enter two letter State Abbreviation (ex: PA): ")
         city = input("Enter the City: ")
-        #    validLoc = validateLoc(city, state)
         search_query = [city, state]
     elif results == 2:
         zcdb = ZipCodeDatabase()
         zip_found = False
         while zip_found is False:
             try:
-                zip = input("Enter Zip Code: ")
-                zipcode = zcdb[int(zip)]
+                zip_int = input("Enter Zip Code: ")
+                zipcode = zcdb[int(zip_int)]
                 zip_found = True
             except:
-                print("Zip " + zip + " not found.")
+                print("Zip " + zip_int + " not found.")
                 again = again_query()
                 if again:
                     continue

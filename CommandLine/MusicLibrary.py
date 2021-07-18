@@ -1,16 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
-import base64
-import requests
-import datetime
-import sys
 import spotipy
-import spotipy.oauth2 as oauth2
 import spotipy.util as util
-from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
-
-from pprint import pprint
 
 
 class SpotifyUserInteractions(object):
@@ -26,12 +18,12 @@ class SpotifyUserInteractions(object):
         self.sp = None
         self.offset = 0
         self.scope = None
-        self.userName = None
+        self.user_name = None
 
     def login(self, username=None):
         try:
             self.scope = 'user-library-read user-top-read'
-            if username == None:
+            if username is None:
                 username = input("Type the Spotify user ID to use: ")
             token = util.prompt_for_user_token(username, show_dialog=True, scope=self.scope,
                                                client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_uri)
@@ -39,15 +31,15 @@ class SpotifyUserInteractions(object):
                 scope=self.scope, client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_uri))
             self.token = token
             try:
-                self.userName = sp.me()['display_name']
-            except:
-                self.userName = username
+                self.user_name = sp.me()['display_name']
+            except Exception:
+                self.user_name = username
             self.sp = sp
             return "Success"
-        except:
+        except Exception:
             return "Failure"
 
-    def pullUserTopArtists(self, offset=0, limit=20, time_range="long_term"):
+    def pull_user_top_artists(self, offset=0, limit=20, time_range="long_term"):
         try:
             self.offset = self.offset + offset
             return [self.sp.current_user_top_artists(limit=limit, offset=self.offset, time_range=time_range), "success"]
@@ -56,10 +48,10 @@ class SpotifyUserInteractions(object):
 
     # TODO follow up on this function
 
-    def dispUser(self):
-        print(self.userName)
+    def disp_user(self):
+        print(self.user_name)
 
     def logout(self):
         self.token = None
         self.sp = None
-        self.userName = None
+        self.user_name = None

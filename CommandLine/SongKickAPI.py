@@ -2,101 +2,101 @@ import requests
 import SongKickUtilities
 #import config
 
-SongkickAPIKey = "P7B3qCrsibrSAPhg"
+songkick_api_key = "P7B3qCrsibrSAPhg"
 
 
 class SongKickAPI(object):
 
     def __init__(self, key=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.key = SongkickAPIKey
-        self.Base_Artist_Search_URL = 'https://api.songkick.com/api/3.0/search/artists.json?query={}&apikey={}'
-        self.Base_Artist_Event_Search_URL = "https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}"
-        self.Base_Location_Search_URL = 'https://api.songkick.com/api/3.0/search/locations.json?query={}&apikey={}'
-        self.Base_Location_Event_Search_URL = 'https://api.songkick.com/api/3.0/metro_areas/{}/calendar.json?apikey={}'
+        self.key = songkick_api_key
+        self.base_artist_search_url = 'https://api.songkick.com/api/3.0/search/artists.json?query={}&apikey={}'
+        self.base_artist_event_search_url = "https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}"
+        self.base_location_search_url = 'https://api.songkick.com/api/3.0/search/locations.json?query={}&apikey={}'
+        self.base_location_event_search_url = 'https://api.songkick.com/api/3.0/metro_areas/{}/calendar.json?apikey={}'
 
-    def findArtist(self, ArtistIn):
-        Search_Artist_URL = self.Base_Artist_Search_URL.format(
-            '"' + ArtistIn + '"', SongkickAPIKey)
-        r = requests.get(Search_Artist_URL)
+    def find_artist(self, artist_in):
+        search_artist_url = self.base_artist_search_url.format(
+            '"' + artist_in + '"', songkick_api_key)
+        r = requests.get(search_artist_url)
         valid_request = r.status_code in range(200, 299)
         if valid_request:
             data = r.json()
-            [status, returnData] = SongKickUtilities.parseSearchResultsArtist(
-                data, ArtistIn)
+            [status, return_data] = SongKickUtilities.parse_search_results_artist(
+                data, artist_in)
         else:
             status = "Failure"
-            returnData = "Invalid Request Code: " + r.status_code
-        return [status, returnData]
+            return_data = "Invalid Request Code: " + r.status_code
+        return [status, return_data]
 
-    def findCity(self, City, State):
+    def find_city(self, city, state):
         r = requests.get(
-            self.Base_Location_Search_URL.format(City, SongkickAPIKey))
+            self.base_location_search_url.format(city, songkick_api_key))
         valid_request = r.status_code in range(200, 299)
         if valid_request:
             data = r.json()
-            [status, returnData] = SongKickUtilities.parseSearchResultsLocationCity(
-                data, City, State)
+            [status, return_data] = SongKickUtilities.parse_search_results_location_city(
+                data, city, state)
         else:
             status = "Failure"
-            returnData = "Invalid Request Code: " + r.status_code
-        return [status, returnData]
+            return_data = "Invalid Request Code: " + r.status_code
+        return [status, return_data]
 
-    def findArtistEvents(self, Artist, ArtistId, dateRange=None, metroId=None):
-        Search_Event_URL = self.Base_Artist_Event_Search_URL.format(
-            ArtistId, SongkickAPIKey)
+    def find_artist_events(self, artist, artist_id, date_range=None, metro_id=None):
+        search_event_url = self.base_artist_event_search_url.format(
+            artist_id, songkick_api_key)
         additions = ""
-        if dateRange is not None:
-            min_date = dateRange[0]
-            max_date = dateRange[1]
+        if date_range is not None:
+            min_date = date_range[0]
+            max_date = date_range[1]
             additions = additions + "&min_date=" + \
                 str(min_date) + "&max_date=" + str(max_date)
-        if metroId is not None:
-            additions = additions + "&metro_area_id=" + str(metroId)
+        if metro_id is not None:
+            additions = additions + "&metro_area_id=" + str(metro_id)
 
-        Search_Event_URL = Search_Event_URL + additions
-        r = requests.get(Search_Event_URL)
+        search_event_url = search_event_url + additions
+        r = requests.get(search_event_url)
         valid_request = r.status_code in range(200, 299)
         if valid_request:
             data = r.json()
-            resultsPage = data['resultsPage']
-            totalEntries = resultsPage["totalEntries"]
-            if totalEntries == 0:
+            results_page = data['resultsPage']
+            total_entries = results_page["totalEntries"]
+            if total_entries == 0:
                 status = "Failure"
-                returnData = "The Artist: " + Artist + " is not on tour"
+                return_data = "The Artist: " + artist + " is not on tour"
             else:
-                results = resultsPage['results']
-                returnData = results['event']
+                results = results_page['results']
+                return_data = results['event']
                 status = "Success"
         else:
             status = "Failure"
-            returnData = "Invalid Request Code: " + str(r.status_code)
-        return [status, returnData]
+            return_data = "Invalid Request Code: " + str(r.status_code)
+        return [status, return_data]
 
-    def findLocationEvents(self, Location, LocationId, dateRange=None):
-        Search_Location_Event_URL = self.Base_Location_Event_Search_URL.format(
-            LocationId, SongkickAPIKey)
+    def find_location_events(self, location, location_id, date_range=None):
+        search_location_event_url = self.base_location_event_search_url.format(
+            location_id, songkick_api_key)
         additions = ""
-        if dateRange is not None:
-            min_date = dateRange[0]
-            max_date = dateRange[1]
+        if date_range is not None:
+            min_date = date_range[0]
+            max_date = date_range[1]
             additions = additions + "&min_date=" + \
                 str(min_date) + "&max_date=" + str(max_date)
-        Search_Location_Event_URL = Search_Location_Event_URL + additions
-        r = requests.get(Search_Location_Event_URL)
+        search_location_event_url = search_location_event_url + additions
+        r = requests.get(search_location_event_url)
         valid_request = r.status_code in range(200, 299)
         if valid_request:
             data = r.json()
-            resultsPage = data['resultsPage']
-            totalEntries = resultsPage["totalEntries"]
-            if totalEntries == 0:
-                returnData = "The Location: " + Location + " does not have any events"
+            results_page = data['resultsPage']
+            total_entries = results_page["totalEntries"]
+            if total_entries == 0:
+                return_data = "The Location: " + location + " does not have any events"
                 status = "Failure"
             else:
-                results = resultsPage['results']
-                returnData = results['event']
+                results = results_page['results']
+                return_data = results['event']
                 status = "Success"
         else:
             status = "Failure"
-            returnData = "Invalid Request Code: " + r.status_code
-        return [status, returnData]
+            return_data = "Invalid Request Code: " + r.status_code
+        return [status, return_data]
