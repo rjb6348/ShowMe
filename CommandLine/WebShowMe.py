@@ -50,7 +50,7 @@ def spotify_management():
         me = spotify.me()
         return render_template('SpotifyManagementLoggedIn.html', name=me['display_name'])
     else:
-        return render_template('SpotifyManagement.html')
+        return spotify_login()
 
 @app.route('/basic_search', methods=['get', 'post'])
 def basic_search():
@@ -170,7 +170,9 @@ def spotify_login():
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
         auth_url = auth_manager.get_authorize_url()
-        return f'<h2><a href="{auth_url}">Sign in</a></h2>'
+        #return f'<h2><a href="{auth_url}">Sign in</a></h2>'
+        return render_template('spotifySignIn.html', auth_url_html=auth_url)
+
 
     # Step 4. Signed in, display data
     spotify = spotipy.Spotify(auth_manager=auth_manager)
