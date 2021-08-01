@@ -1,0 +1,44 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.logo img{
+    width: 120px;
+    border-radius: 30px;
+    filter: grayscale(100%);
+    transition: 0.3s ease-out;
+}
+.logo img:hover{
+    width: 140px;
+    border-radius: 10px;
+    filter: none;
+    transition: 0.3s ease-out;
+}
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+.nav-links{
+    display: flex;
+    list-style: none;
+}
+
+.nav-links a{
+    padding: 30px;
+    margin-right: 0px;
+    background: rgb(4, 73, 150);
+    /*border-radius: 5px;*/
+    transition: 0.3s ease-out;
+}
+
+.nav-links a:hover{
+    padding: 40px;
+    background: rgb(100,170,150);
+    border-radius: 10px;
+    transition: 0.3s ease-out;
+}

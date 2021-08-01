@@ -1,0 +1,12 @@
+{% extends "maintemplate.html" %}
+{% block mycontent %}
+<div class="">
+    <h1>Hello {{name}}</h1>
+    <div>
+        <a href="{{ url_for('listening_history') }}">Listening History</a>
+    </div>
+    <div>
+        <a href="{{ url_for('spotify_sign_out') }}">Spotify Log Out</a>
+    </div>
+</div>
+{% endblock mycontent %}
