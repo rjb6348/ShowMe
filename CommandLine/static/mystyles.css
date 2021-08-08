@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css?family=Hahmlet&display=swap');
+
+body{
+    background: black;
+    background-image: url("concert5.jpg");
+    color: white;
+    font-family: 'Hahmlet', normal;
+    background-size: cover;
+}
+
+input{
+    font-family: 'Hahmlet', normal;
+    font-size: 1.5rem;
+    padding: 10px;
+
+}
+
+input[type=text]{
+    background: #1cbe1c;
+    color: white;
+    transition: 0.3s 0s ease-out;
+    border:none;
+    border-bottom: 2px solid #49caff;
+}
+
+input[type=text]:focus{
+    background: #1cbe52;
+    color: white;
+    transition: 0.3s 0s ease-out;
+    border:none;
+    border-bottom: 3px solid #ff631a;
+}
+
+input[type=submit]{
+    background: #1cbe1c;
+    color: white;
+    transition: 0.3s 0s ease-out;
+    border:none;
+    box-shadow: 2px 2px 2px 0px #1cbe1c;
+}
+
+input[type=submit]:hover, input[type=submit]:focus{
+    background: #ff631a;
+    color: white;
+    transition: 0.3s 0s ease-out;
+    border:none;
+}
+
+.content{
+    display: flex;
+    justify-items: center;
+    justify-content: center;
+}
+
+.loader {
+    border-top: 16px solid blue;
+    border-bottom: 16px solid blue;
+  }

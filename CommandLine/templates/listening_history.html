@@ -1,4 +1,5 @@
-{% block content %}
+{% extends "maintemplate.html" %}
+{% block mycontent %}
     {% if userName %}
         <h1>Welcome {{userName}}</h1>
     {% else %}
@@ -20,7 +21,7 @@
         <h3>How many Artists do you want to look for?</h3>
         <h4>
             <input type="range" min="1" max="50" value="25" name="num_tracks" step="1" onchange="showValue(this.value)" />
-            <span id="range">50</span>
+            <span id="range">25</span>
         </h4>
         <script type="text/javascript">
             function showValue(newValue) {
@@ -38,4 +39,4 @@
     </form>
 
     </div>
-{% endblock %}
+{% endblock mycontent %}

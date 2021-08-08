@@ -1,0 +1,12 @@
+{% extends "maintemplate.html" %}
+{% block mycontent %}
+<div class="">
+    <h1>Home</h1>
+    <div>
+        <a href="{{ url_for('basic_search') }}">Basic Search</a>
+    </div>
+    <div>
+        <a href="{{ url_for('listening_history') }}">Music Library Search</a>
+    </div>
+</div>
+{% endblock mycontent %}

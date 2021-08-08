@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock title %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='mystyles.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='navigation.css') }}"/>
+    {% block extraheader %} {% endblock extraheader %}
+</head>
+
+<body>
+<header class="navbar">
+    <div class="logo">
+        <p><a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='logo.jpg') }}"/>
+        </a></p>
+    </div>
+    <div class="link-div">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('basic_search') }}">Basic Search</a></li>
+                <li><a href="{{ url_for('spotify_management') }}">Spotify Account</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+<div class="content">
+    <div class="content-middle">
+        {% block mycontent %}
+        {% endblock mycontent %}
+    </div>
+</div>
+
+</body>
+</html>

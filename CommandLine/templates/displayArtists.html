@@ -1,25 +1,33 @@
-<doctype html="">
+{% extends "maintemplate.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block mycontent %}
+<form action="/disp_artists" method="post">
     <div class="">
-        {% from "_formhelpers.html" import render_field %}
-        <form action="/disp_artists" method="post">
-            <div class="">
-                {{ render_field(form.searchZip) }}
-                <center>
-                    <button type="submit" class="btn btn-danger spotify_button" id="" style="">
-                        <h4><i class="fab fa-spotify"></i> Find Shows</h4>
-                    </button>
-                </center>
-            </div>
-        </form>
+        {{ render_field(form.searchZip) }}
+        <center>
+            <button type="submit" class="btn btn-danger spotify_button" onchange="spin(this)">
+                <h4><i class="fab fa-spotify"></i> Find Shows</h4>
+            </button>
+        </center>
     </div>
+    <script type="text/javascript">
+        function spin(newValue) {
+            <div class="loader"></div>
+      }
+    </script>
+</form>
+</div>
 
-    <div class="">
-        <div class="">
-            {% for artist in artist_list %}
-            <h1><a href={{artist.spotify_url}}></href>{{artist.artist_name}}</h1>
-            <div class="inline-block"><img src={{artist.artist_image}} width="75" height="75"></div>
-            {% endfor %}
-        </div>
-    </div>
-
-</doctype>
+<div style="height:500px;overflow:auto;">
+    <table>
+        {% for artist in artist_list %}
+        <tr>
+            <td>
+                <class="inline-block"><a href={{artist.spotify_url}}></href><img src={{artist.artist_image}} width="75" height="75">
+                    <a href={{artist.spotify_url}}></href>{{artist.artist_name}}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock mycontent %}

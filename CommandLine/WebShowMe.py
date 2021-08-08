@@ -9,8 +9,7 @@ import ArtistList
 import SongKickAPI
 import Event
 import EventList
-from forms import BasicForm
-from forms import ArtistResultForm
+from forms import BasicForm, ArtistResultForm, HomePageForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
@@ -34,10 +33,24 @@ def session_cache_path():
 @app.route('/')
 def index():
     clear_search_keys()
-    return f'<a href="/basic_search">[Basic Search]<a/></h2> | ' \
-           f'<a href="/spotify_login">[Login with Spotify]</a> | ' \
-           f'<a href="/spotify_sign_out">[Sign out of Spotify]</a> | ' \
-               
+    return render_template('HomePage.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+@app.route('/spotify_management', methods=['get', 'post'])
+def spotify_management():
+    if 'spotify' in session.keys():
+        spotify = session["spotify"]
+        me = spotify.me()
+        return render_template('SpotifyManagementLoggedIn.html', name=me['display_name'])
+    else:
+        return spotify_login()
 
 @app.route('/basic_search', methods=['get', 'post'])
 def basic_search():
@@ -157,24 +170,26 @@ def spotify_login():
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
         auth_url = auth_manager.get_authorize_url()
-        return f'<h2><a href="{auth_url}">Sign in</a></h2>'
+        #return f'<h2><a href="{auth_url}">Sign in</a></h2>'
+        return render_template('spotifySignIn.html', auth_url_html=auth_url)
+
 
     # Step 4. Signed in, display data
     spotify = spotipy.Spotify(auth_manager=auth_manager)
     session['spotify'] = spotify
-    return redirect('/spotify_interactions')
+    return redirect('/listening_history')
 
-@app.route('/spotify_interactions')
-def spotify_interactions():
+@app.route('/listening_history')
+def listening_history():
     cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
     auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
+        return redirect('/spotify_management')
 
     spotify = session['spotify']
     me = spotify.me()
     print(me)
-    return render_template("spotify_interactions.html",userName=me['display_name'])
+    return render_template("listening_history.html",userName=me['display_name'])
 
 @app.route("/go", methods=['POST'])
 def go():
