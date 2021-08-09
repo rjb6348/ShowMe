@@ -1,0 +1,7 @@
+Flask==1.1.1
+spotipy==2.18.0
+pyzipcode==3.0.1
+Flask_Session==0.4.0
+Flask_WTF==0.15.1
+requests==2.22.0
+WTForms==2.3.3

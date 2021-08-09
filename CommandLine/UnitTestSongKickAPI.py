@@ -6,7 +6,7 @@ class Test_SongKickAPI(unittest.TestCase):
     def test_findArtist(self):
         sk = SongKickAPI.SongKickAPI()
         # Test Success
-        self.assertEqual(sk.find_artist("The Killers"), ["Success", 555021])
+        self.assertEqual(sk.find_artist("The Killers")[1]['id'],  555021)
         # Test Failure to find
         self.assertEqual(sk.find_artist("asdfl;kjkjbav")[0], "Failure")
         # Need to find 2 bands with same name to test edge case
