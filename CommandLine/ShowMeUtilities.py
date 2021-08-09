@@ -1,13 +1,14 @@
 import datetime
 from pyzipcode import ZipCodeDatabase
 import MusicLibrary
-
+import os
 
 def setup_music_library():
     print("Time to Login to Spotify!")
     client_id = '1b55c01382b740c0b4c6fd22f7065fd6'
     client_secret = '0d1c6411f69342359bdaca85134120eb'
-    redirect_uri = 'http://192.168.0.143:8000/'
+    redirect_uri = redirect_uri=os.environ.get("SPOTIPY_REDIRECT_URI", "8080")
+
     logged_in = False
     try:
         music_library = MusicLibrary.SpotifyUserInteractions(
